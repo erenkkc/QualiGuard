@@ -1,0 +1,18 @@
+# GitLab CI — QualiGuard örnek job
+# .gitlab-ci.yml dosyanıza ekleyin veya include edin
+
+qualiguard-scan:
+  stage: test
+  image: golang:1.22-bookworm
+  before_script:
+    - apt-get update && apt-get install -y python3 python3-pip
+    - pip install ruff
+    - go build -o qg ./cmd/qg
+  script:
+    - ./qg scan --config qualiguard.yaml --format sarif --output qualiguard.sarif --fail-on-gate
+  artifacts:
+    when: always
+    paths:
+      - qualiguard.sarif
+    reports:
+      sast: qualiguard.sarif

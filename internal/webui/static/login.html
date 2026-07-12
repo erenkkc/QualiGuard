@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giriş — __QG_BRAND_NAME__</title>
+  __QG_THEME_CSS__
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/landing.css?v=1">
+  <style>
+    .login-wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px 28px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+    }
+    .login-card h1 {
+      margin: 0 0 6px;
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+    .login-card p {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .login-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .login-field span {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .login-field input {
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font: inherit;
+    }
+    .login-field input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .login-error {
+      color: #ff8a8a;
+      font-size: 0.88rem;
+      margin: 0 0 14px;
+      min-height: 1.2em;
+    }
+    .login-back {
+      display: block;
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-decoration: none;
+    }
+    .login-back:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="login-wrap">
+    <form class="login-card" id="login-form">
+      <h1>__QG_BRAND_NAME__</h1>
+      <p>Panele erişmek için şifrenizi girin.</p>
+      <div class="login-field">
+        <span>Şifre</span>
+        <input type="password" id="password" autocomplete="current-password" required autofocus>
+      </div>
+      <p class="login-error" id="login-error"></p>
+      <button type="submit" class="btn primary" style="width:100%">Giriş yap</button>
+      <a href="/" class="login-back">← Ana sayfa</a>
+    </form>
+  </div>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const next = params.get("next") || "/app";
+
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById("login-error");
+      errEl.textContent = "";
+      const password = document.getElementById("password").value;
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password }),
+        });
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.error || "Giriş başarısız");
+        }
+        const data = await res.json();
+        localStorage.setItem("qg_token", data.token);
+        location.href = next;
+      } catch (err) {
+        errEl.textContent = err.message || "Giriş başarısız";
+      }
+    });
+
+    fetch("/api/public/config").then(r => r.json()).then(cfg => {
+      if (!cfg.auth_required) location.href = next;
+    }).catch(() => {});
+  </script>
+</body>
+</html>

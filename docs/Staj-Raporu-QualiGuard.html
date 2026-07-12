@@ -1,0 +1,159 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>QualiGuard Staj Proje Raporu</title>
+<style>
+  body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; line-height: 1.5; margin: 2cm; color: #222; }
+  h1 { font-size: 18pt; color: #1a365d; border-bottom: 2px solid #3182ce; padding-bottom: 6px; }
+  h2 { font-size: 14pt; color: #2c5282; margin-top: 24px; }
+  h3 { font-size: 12pt; color: #2d3748; margin-top: 16px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+  th, td { border: 1px solid #cbd5e0; padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #ebf8ff; font-weight: bold; }
+  .meta { color: #4a5568; margin-bottom: 20px; }
+  .meta p { margin: 4px 0; }
+  pre { background: #f7fafc; border: 1px solid #e2e8f0; padding: 12px; font-family: Consolas, monospace; font-size: 9pt; }
+  ul { margin: 8px 0; }
+  li { margin: 4px 0; }
+  .footer { margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 12px; color: #718096; font-size: 10pt; }
+</style>
+</head>
+<body>
+
+<h1>QUALIGUARD — STAJ PROJE RAPORU</h1>
+
+<div class="meta">
+  <p><strong>Proje Adı:</strong> QualiGuard</p>
+  <p><strong>Konu:</strong> SonarQube Benzeri Statik Kod Analizi ve Kalite Yönetim Platformu</p>
+  <p><strong>Geliştirici:</strong> [Adınız Soyadınız]</p>
+  <p><strong>Kurum:</strong> [Şirket / Üniversite Adı]</p>
+  <p><strong>Tarih:</strong> Temmuz 2026</p>
+</div>
+
+<h2>1. Projenin Amacı</h2>
+<p>QualiGuard, şirket içi kullanım için geliştirilmiş, <strong>SonarQube benzeri</strong> bir kod kalitesi platformudur. Amaç; yazılım projelerindeki güvenlik açıkları, hatalar ve kod kokularını otomatik tespit etmek, sonuçları Türkçe arayüzle sunmak ve CI/CD sürecinde <strong>kalite kapısı (quality gate)</strong> ile birleştirmeyi engellemektir.</p>
+<p>SonarQube kurumsal lisans ve ağır altyapı gerektirdiği için, daha hafif ve özelleştirilebilir bir alternatif ihtiyacı doğmuştur.</p>
+
+<h2>2. Kullanılan Teknolojiler</h2>
+<table>
+  <tr><th>Katman</th><th>Teknoloji</th><th>Kullanım Amacı</th></tr>
+  <tr><td>Backend / CLI</td><td>Go (Golang) 1.22+</td><td>Ana uygulama, tarayıcı motoru, HTTP sunucu</td></tr>
+  <tr><td>CLI framework</td><td>Cobra</td><td>qg scan komut satırı arayüzü</td></tr>
+  <tr><td>HTTP router</td><td>Chi v5</td><td>REST API yönlendirme</td></tr>
+  <tr><td>Veritabanı</td><td>SQLite</td><td>Proje, analiz ve bulgu geçmişi</td></tr>
+  <tr><td>Frontend</td><td>HTML + CSS + JavaScript</td><td>Web paneli (framework kullanılmadı)</td></tr>
+  <tr><td>Python analizi</td><td>Python 3 + AST script</td><td>Python dosya ayrıştırma</td></tr>
+  <tr><td>JS linter</td><td>ESLint (npx)</td><td>JavaScript stil ve güvenlik kuralları</td></tr>
+  <tr><td>Python linter</td><td>Ruff (pip)</td><td>Python stil, import ve güvenlik</td></tr>
+  <tr><td>Versiyon kontrolü</td><td>Git</td><td>Artımlı tarama (değişen dosyalar)</td></tr>
+  <tr><td>CI/CD</td><td>GitHub Actions</td><td>PR otomatik tarama ve kalite kapısı</td></tr>
+  <tr><td>Rapor</td><td>JSON, SARIF</td><td>CLI çıktısı, GitHub Security</td></tr>
+  <tr><td>AI (opsiyonel)</td><td>Ollama</td><td>Yerel LLM ile bulgu açıklaması</td></tr>
+  <tr><td>Konteyner</td><td>Docker Compose</td><td>İsteğe bağlı sunucu dağıtımı</td></tr>
+</table>
+
+<h2>3. Yapılan İşler</h2>
+
+<h3>3.1 Komut Satırı Tarayıcı (CLI)</h3>
+<ul>
+  <li><strong>qg scan</strong> — proje taraması, JSON/SARIF rapor</li>
+  <li><strong>--fail-on-gate</strong> — kapı kırılınca CI hata kodu</li>
+  <li><strong>--incremental</strong> — yalnızca değişen dosyalar (git diff)</li>
+  <li><strong>--pr-comment</strong> — GitHub PR özet yorumu</li>
+</ul>
+
+<h3>3.2 Sunucu ve REST API</h3>
+<ul>
+  <li>qg-server HTTP sunucusu (port 9000)</li>
+  <li>Proje oluşturma, analiz yükleme, bulgu listesi</li>
+  <li>API token kimlik doğrulama</li>
+  <li>Dosya yükleme ve tam kaynak kod görüntüleme</li>
+</ul>
+
+<h3>3.3 Web Paneli</h3>
+<ul>
+  <li>Genel Bakış — proje ve sorun özeti</li>
+  <li>Dosya Yükle — önizleme + projeye kayıt</li>
+  <li>Canlı Analiz — editörde anında tarama</li>
+  <li>Projeler — filtre, düzeltme önerisi, satır vurgulama</li>
+  <li>Kalite kapısı — toplam uyarı / kritik ayrımı (Türkçe)</li>
+</ul>
+
+<h3>3.4 Kod Analizi</h3>
+<p><strong>Python:</strong> SQL injection, eval, hardcoded şifre, bare except, kullanılmayan import/değişken, karmaşık fonksiyon + Ruff kuralları</p>
+<p><strong>JavaScript:</strong> eval, XSS, secret tespiti, var/eqeqeq (ESLint veya yerleşik kurallar)</p>
+<p><strong>Go, Java, C#:</strong> Temel güvenlik kuralları</p>
+
+<h3>3.5 Kalite Kapısı</h3>
+<ul>
+  <li>Yalnızca engelleyici, kritik, güvenlik açığı ve hata (bug) kapıyı kırar</li>
+  <li>Stil uyarıları (kod kokusu) kapıyı düşürmez</li>
+  <li>Örnek: 46 var uyarısı → kapı Geçti; SQL injection → kapı Kaldı</li>
+</ul>
+
+<h3>3.6 Yanlış Alarm İşaretleme</h3>
+<ul>
+  <li>Yanlış alarm / Düzeltilmeyecek butonları</li>
+  <li>Sonraki taramada yok sayılır, kapı sayımından çıkar</li>
+</ul>
+
+<h3>3.7 GitHub PR Entegrasyonu</h3>
+<ul>
+  <li>QualiGuard Quality Gate check (yeşil/kırmızı)</li>
+  <li>PR otomatik özet yorumu</li>
+  <li>SARIF → GitHub Security sekmesi</li>
+</ul>
+
+<h3>3.8 Türkçe UX ve AI</h3>
+<ul>
+  <li>Tüm panel ve düzeltme önerileri Türkçe</li>
+  <li>Ollama ile yerel AI açıklama (opsiyonel)</li>
+  <li>Çoklu bulut AI sağlayıcıları kaldırıldı (sadeleştirme)</li>
+</ul>
+
+<h2>4. Mimari</h2>
+<pre>
+CLI (qg scan) ──► Scanner ──► Kurallar + ESLint + Ruff
+                      │
+                      ▼
+              Kalite Kapısı Değerlendirme
+                      │
+                      ▼
+         qg-server + SQLite + Web UI
+                      ▲
+              GitHub Actions (PR)
+</pre>
+
+<h2>5. Sonuçlar</h2>
+<ul>
+  <li>Şirket içi SonarQube alternatifi — hafif, lisans maliyeti yok</li>
+  <li>PR aşamasında otomatik kod kalitesi kontrolü</li>
+  <li>Stil vs kritik ayrımı ile anlamlı kapı kararları</li>
+  <li>Go, SQLite, CI/CD, linter orkestrasyonu deneyimi</li>
+</ul>
+
+<h2>6. Yol Haritası</h2>
+<table>
+  <tr><th>Özellik</th><th>Durum</th></tr>
+  <tr><td>Artımlı tarama</td><td>Tamamlandı</td></tr>
+  <tr><td>ESLint (JS) + Ruff (Python)</td><td>Tamamlandı</td></tr>
+  <tr><td>GitHub PR kontrolü</td><td>Tamamlandı</td></tr>
+  <tr><td>Yanlış alarm işaretleme</td><td>Tamamlandı</td></tr>
+  <tr><td>VS Code eklentisi</td><td>Planlandı</td></tr>
+</table>
+
+<h2>7. Proje Konumu</h2>
+<p><strong>Klasör:</strong> C:\Users\Eren\Desktop\QualiGuard\</p>
+<p><strong>Web paneli:</strong> http://127.0.0.1:9000</p>
+<p><strong>Sunum rehberi:</strong> docs\09-staj-sunumu-demo.md</p>
+
+<div class="footer">
+  <p><strong>Hazırlayan:</strong> [Adınız Soyadınız]</p>
+  <p><strong>Staj dönemi:</strong> [Başlangıç — Bitiş]</p>
+  <p><strong>Danışman:</strong> [İsim]</p>
+</div>
+
+</body>
+</html>

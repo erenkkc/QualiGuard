@@ -1,0 +1,40 @@
+project:
+  key: sample-app
+  name: Sample Application
+  version: "1.0.0"
+
+# White-label: panel ve landing markası
+brand:
+  name: QualiGuard
+  tagline: Kod kalitesi platformu
+  eyebrow: Statik analiz · Kalite kapısı
+  accent: "#4d9fff"
+  accent2: "#7c6cff"
+
+sources:
+  - testdata/sample_project
+
+languages:
+  - python
+  - javascript
+  - go
+  - java
+  - csharp
+
+# Opsiyonel: yapay zeka (OpenAI, Gemini veya yerel Ollama)
+ai:
+  enabled: true
+  provider: ollama   # ollama | openai | gemini | auto
+  openai:
+    # api_key: sk-...   # veya QUALIGUARD_OPENAI_API_KEY ortam değişkeni
+    model: gpt-4o-mini
+  gemini:
+    # api_key: ...      # veya QUALIGUARD_GEMINI_API_KEY
+    model: gemini-2.0-flash
+  ollama:
+    enabled: true
+    base_url: http://127.0.0.1:11434/v1
+    model: llama3.2:latest
+
+exclusions:
+  - "**/__pycache__/**"

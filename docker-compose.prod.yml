@@ -1,0 +1,60 @@
+# Production deploy — QualiGuard + Caddy (HTTPS)
+#
+# 1. cp .env.example .env
+# 2. QG_DOMAIN ve QG_EMAIL düzenle
+# 3. docker compose -f docker-compose.prod.yml up -d --build
+#
+# Panel: https://your-domain/app
+# Landing: https://your-domain/
+
+services:
+  qualiguard:
+    build: .
+    expose:
+      - "9000"
+    volumes:
+      - qualiguard-data:/data
+      - ./qualiguard.yaml:/app/qualiguard.yaml:ro
+    environment:
+      QG_DATA_DIR: /data
+      QG_PANEL_PASSWORD: ${QG_PANEL_PASSWORD:-}
+    command:
+      - qg-server
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "9000"
+      - --data-dir
+      - /data
+      - --work-dir
+      - /app
+      - --config
+      - /app/qualiguard.yaml
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:9000/api/health')\""]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      QG_DOMAIN: ${QG_DOMAIN:-localhost}
+      QG_EMAIL: ${QG_EMAIL:-admin@example.com}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      qualiguard:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  qualiguard-data:
+  caddy-data:
+  caddy-config:

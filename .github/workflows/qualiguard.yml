@@ -1,0 +1,69 @@
+name: QualiGuard
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
+jobs:
+  quality-gate:
+    name: QualiGuard Quality Gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Ruff
+        run: pip install ruff
+
+      - name: Build QualiGuard CLI
+        run: go build -o qg ./cmd/qg
+
+      - name: Scan
+        id: scan
+        continue-on-error: true
+        run: |
+          FLAGS="--config qualiguard.yaml --format sarif --output qualiguard.sarif --pr-comment qualiguard-pr.md --fail-on-gate -v"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch origin "${{ github.base_ref }}"
+            ./qg scan $FLAGS --incremental --base "origin/${{ github.base_ref }}"
+          else
+            ./qg scan $FLAGS --incremental --base HEAD~1
+          fi
+
+      - name: PR summary comment
+        if: github.event_name == 'pull_request' && always() && hashFiles('qualiguard-pr.md') != ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: qualiguard-pr.md
+
+      - name: Upload SARIF
+        if: always() && hashFiles('qualiguard.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: qualiguard.sarif
+
+      - name: Enforce quality gate
+        if: steps.scan.outcome == 'failure'
+        run: |
+          echo "::error::QualiGuard kalite kapısı başarısız — PR birleştirilemez."
+          exit 1

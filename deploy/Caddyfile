@@ -1,0 +1,22 @@
+# Production: HTTPS reverse proxy
+# Kullanım: docker compose -f docker-compose.prod.yml up -d
+#
+# .env dosyasında QG_DOMAIN ve QG_EMAIL ayarlayın.
+
+{$QG_DOMAIN:localhost} {
+	encode gzip zstd
+
+	@api path /api/*
+	handle @api {
+		reverse_proxy qualiguard:9000
+	}
+
+	handle {
+		reverse_proxy qualiguard:9000
+	}
+}
+
+# Yerel test (HTTP only):
+# :80 {
+# 	reverse_proxy qualiguard:9000
+# }

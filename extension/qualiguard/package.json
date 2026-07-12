@@ -1,0 +1,85 @@
+{
+  "name": "qualiguard",
+  "displayName": "QualiGuard",
+  "description": "QualiGuard kod kalitesi — dosya/workspace tarama, hover açıklama",
+  "version": "0.2.0",
+  "publisher": "qualiguard",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qualiguard/qualiguard"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Linters", "Other"],
+  "activationEvents": [
+    "onLanguage:python",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:go",
+    "onLanguage:java",
+    "onLanguage:csharp"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "qualiguard.scanWorkspace",
+        "title": "QualiGuard: Workspace'i tara"
+      },
+      {
+        "command": "qualiguard.scanFile",
+        "title": "QualiGuard: Bu dosyayı tara"
+      },
+      {
+        "command": "qualiguard.connect",
+        "title": "QualiGuard: Sunucuya bağlan"
+      },
+      {
+        "command": "qualiguard.clearDiagnostics",
+        "title": "QualiGuard: Uyarıları temizle"
+      }
+    ],
+    "configuration": {
+      "title": "QualiGuard",
+      "properties": {
+        "qualiguard.serverUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:9000",
+          "description": "QualiGuard sunucu adresi"
+        },
+        "qualiguard.token": {
+          "type": "string",
+          "default": "",
+          "description": "API token (boş bırakılırsa localhost bootstrap kullanılır)"
+        },
+        "qualiguard.scanOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Kaydedince otomatik tara"
+        },
+        "qualiguard.scanOnOpen": {
+          "type": "boolean",
+          "default": true,
+          "description": "Desteklenen dosya açılınca tara"
+        },
+        "qualiguard.showHover": {
+          "type": "boolean",
+          "default": true,
+          "description": "Satır üzerinde hover ile sorun detayı göster"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "npm run compile && npx @vscode/vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.5"
+  }
+}
