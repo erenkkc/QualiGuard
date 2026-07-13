@@ -66,10 +66,11 @@ func (e *Explainer) Chat(ctx context.Context, messages []ChatMessage) (string, e
 	if err != nil {
 		return "", err
 	}
-	if e.provider == nil || !e.provider.Available() {
-		return "", fmt.Errorf("yapay zeka aktif değil — Ollama'yı başlatın veya API anahtarı ekleyin")
+	p := e.ensureProvider()
+	if p == nil {
+		return "", fmt.Errorf("yapay zeka aktif değil — Ollama uygulamasını açın (yeniden başlatma gerekmez)")
 	}
-	reply, err := e.provider.Chat(ctx, msgs)
+	reply, err := p.Chat(ctx, msgs)
 	if err != nil {
 		return "", err
 	}
@@ -82,17 +83,18 @@ func (e *Explainer) ChatStream(ctx context.Context, messages []ChatMessage, onDe
 	if err != nil {
 		return "", err
 	}
-	if e.provider == nil || !e.provider.Available() {
-		return "", fmt.Errorf("yapay zeka aktif değil — Ollama'yı başlatın veya API anahtarı ekleyin")
+	p := e.ensureProvider()
+	if p == nil {
+		return "", fmt.Errorf("yapay zeka aktif değil — Ollama uygulamasını açın (yeniden başlatma gerekmez)")
 	}
-	if sp, ok := e.provider.(streamProvider); ok {
+	if sp, ok := p.(streamProvider); ok {
 		reply, err := sp.ChatStream(ctx, msgs, onDelta)
 		if err != nil {
 			return "", err
 		}
 		return polishChatReply(reply), nil
 	}
-	reply, err := e.provider.Chat(ctx, msgs)
+	reply, err := p.Chat(ctx, msgs)
 	if err != nil {
 		return "", err
 	}

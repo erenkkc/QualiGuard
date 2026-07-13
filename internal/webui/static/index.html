@@ -10,11 +10,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/app.css?v=19">
+  <link rel="stylesheet" href="/assets/app.css?v=21">
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
+  <div class="app" id="app-shell">
+    <button type="button" class="menu-toggle" id="menu-toggle" aria-label="Menüyü aç" aria-expanded="false">☰</button>
+    <button type="button" class="sidebar-backdrop" id="sidebar-backdrop" hidden aria-label="Menüyü kapat"></button>
+    <aside class="sidebar" id="sidebar">
       <div class="brand">
         <a href="/" class="brand-link" title="Ana sayfa">
         <div class="brand-mark" aria-hidden="true">
@@ -58,6 +60,6 @@
   <script>
     window.__QG_TOKEN__ = "__QG_TOKEN__";
   </script>
-  <script src="/assets/app.js?v=30"></script>
+  <script src="/assets/app.js?v=32"></script>
 </body>
 </html>

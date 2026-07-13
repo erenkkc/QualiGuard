@@ -23,11 +23,11 @@ func BuildProvider(cfg Config) Provider {
 	choice := strings.ToLower(strings.TrimSpace(cfg.Provider))
 	switch choice {
 	case "openai":
-		return firstAvailable(NewOpenAIProvider())
+		return NewOpenAIProvider()
 	case "gemini":
-		return firstAvailable(NewGeminiProvider())
+		return NewGeminiProvider()
 	case "ollama":
-		return firstAvailable(NewOllamaProvider())
+		return NewOllamaProvider()
 	default:
 		for _, p := range []Provider{
 			NewOpenAIProvider(),
@@ -38,15 +38,9 @@ func BuildProvider(cfg Config) Provider {
 				return p
 			}
 		}
+		// Ollama sonra açılabilir — yeniden başlatma zorunlu olmasın
+		return NewOllamaProvider()
 	}
-	return nil
-}
-
-func firstAvailable(p Provider) Provider {
-	if p != nil && p.Available() {
-		return p
-	}
-	return nil
 }
 
 func issuePrompt(issue model.Issue) string {

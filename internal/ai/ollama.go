@@ -2,6 +2,7 @@ package ai
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"os"
 	"strings"
@@ -45,7 +46,7 @@ func (p *OllamaProvider) Available() bool {
 
 func (p *OllamaProvider) ping() bool {
 	base := strings.TrimSuffix(p.baseURL, "/v1")
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, base+"/api/tags", nil)
 	if err != nil {
@@ -56,7 +57,29 @@ func (p *OllamaProvider) ping() bool {
 		return false
 	}
 	defer resp.Body.Close()
-	return resp.StatusCode < 300
+	if resp.StatusCode >= 300 {
+		return false
+	}
+	var payload struct {
+		Models []struct {
+			Name string `json:"name"`
+		} `json:"models"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
+		return true // tags ok, model list optional
+	}
+	want := strings.TrimSpace(p.model)
+	if want == "" {
+		return len(payload.Models) > 0
+	}
+	wantBase := strings.Split(want, ":")[0]
+	for _, m := range payload.Models {
+		name := strings.TrimSpace(m.Name)
+		if name == want || strings.HasPrefix(name, wantBase+":") || name == wantBase {
+			return true
+		}
+	}
+	return false
 }
 
 func (p *OllamaProvider) ExplainIssue(ctx context.Context, issue model.Issue) (model.AIExplanation, error) {

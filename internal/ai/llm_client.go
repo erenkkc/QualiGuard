@@ -50,7 +50,7 @@ func chatCompletionAdvanced(ctx context.Context, url, apiKey, modelName, system 
 		req.Header.Set("Authorization", "Bearer "+apiKey)
 	}
 
-	client := &http.Client{Timeout: 90 * time.Second}
+	client := &http.Client{Timeout: 180 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", err
@@ -104,7 +104,7 @@ func chatCompletionStream(ctx context.Context, url, apiKey, modelName, system st
 		req.Header.Set("Authorization", "Bearer "+apiKey)
 	}
 
-	client := &http.Client{Timeout: 120 * time.Second}
+	client := &http.Client{Timeout: 180 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", err

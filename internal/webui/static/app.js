@@ -506,6 +506,52 @@ function setPage(title, subtitle, actions) {
   if (refresh) refresh.onclick = () => route();
 }
 
+function closeMobileNav() {
+  const shell = document.getElementById("app-shell");
+  const backdrop = document.getElementById("sidebar-backdrop");
+  const toggle = document.getElementById("menu-toggle");
+  if (!shell) return;
+  shell.classList.remove("nav-open");
+  if (backdrop) backdrop.hidden = true;
+  if (toggle) {
+    toggle.setAttribute("aria-label", "Menüyü aç");
+    toggle.setAttribute("aria-expanded", "false");
+  }
+}
+
+function openMobileNav() {
+  const shell = document.getElementById("app-shell");
+  const backdrop = document.getElementById("sidebar-backdrop");
+  const toggle = document.getElementById("menu-toggle");
+  if (!shell) return;
+  shell.classList.add("nav-open");
+  if (backdrop) backdrop.hidden = false;
+  if (toggle) {
+    toggle.setAttribute("aria-label", "Menüyü kapat");
+    toggle.setAttribute("aria-expanded", "true");
+  }
+}
+
+function initMobileNav() {
+  const toggle = document.getElementById("menu-toggle");
+  const backdrop = document.getElementById("sidebar-backdrop");
+  if (toggle && !toggle.dataset.bound) {
+    toggle.dataset.bound = "1";
+    toggle.addEventListener("click", () => {
+      const shell = document.getElementById("app-shell");
+      if (shell?.classList.contains("nav-open")) closeMobileNav();
+      else openMobileNav();
+    });
+  }
+  if (backdrop && !backdrop.dataset.bound) {
+    backdrop.dataset.bound = "1";
+    backdrop.addEventListener("click", closeMobileNav);
+  }
+  window.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeMobileNav();
+  });
+}
+
 function renderNav(active) {
   const sections = [
     {
@@ -537,6 +583,10 @@ function renderNav(active) {
         <span class="nav-icon">${item.icon}</span>${item.label}
       </a>`).join("")}
   `).join("");
+  document.querySelectorAll("#nav .nav-item").forEach(link => {
+    link.addEventListener("click", closeMobileNav);
+  });
+  closeMobileNav();
 }
 
 function countBySeverity(issues) {
@@ -629,26 +679,30 @@ async function renderOverview() {
       </div>
 
       <div class="dashboard-grid">
-        <div class="stat-card accent">
+        <a class="stat-card accent is-link" href="#/projects">
           <div class="stat-icon">◫</div>
           <div class="label">Proje</div>
           <div class="value">${projects.length}</div>
-        </div>
-        <div class="stat-card danger">
+          <div class="hint">Projeleri aç</div>
+        </a>
+        <a class="stat-card danger is-link" href="#/projects">
           <div class="stat-icon">!</div>
           <div class="label">Açık sorun</div>
           <div class="value">${openIssues}</div>
-        </div>
-        <div class="stat-card">
+          <div class="hint">Detaya git</div>
+        </a>
+        <a class="stat-card is-link" href="#/projects">
           <div class="stat-icon">⬡</div>
           <div class="label">Güvenlik</div>
           <div class="value">${vulns}</div>
-        </div>
-        <div class="stat-card ${failedGates ? "danger" : "ok"}">
+          <div class="hint">Güvenlik bulguları</div>
+        </a>
+        <a class="stat-card ${failedGates ? "danger" : "ok"} is-link" href="#/projects">
           <div class="stat-icon">${failedGates ? "✕" : "✓"}</div>
           <div class="label">Kapı</div>
           <div class="value">${failedGates || "OK"}</div>
-        </div>
+          <div class="hint">Kapı durumu</div>
+        </a>
       </div>
 
       <div class="panel-section panel-compact">
@@ -1154,8 +1208,9 @@ function renderChat() {
       </div>
       <div class="chat-thread" id="chat-thread">${intro}${history}</div>
       <form class="chat-compose" id="chat-form">
-        <textarea id="chat-input" rows="3" placeholder="Mesaj…" ${state.aiActive ? "" : "disabled"}></textarea>
+        <textarea id="chat-input" rows="2" placeholder="Mesaj yazın…" ${state.aiActive ? "" : "disabled"}></textarea>
         <button type="submit" class="btn primary" id="chat-send" ${state.aiActive ? "" : "disabled"}>Gönder</button>
+        <p class="chat-compose-hint">Enter gönderir · Shift+Enter yeni satır</p>
       </form>
     </section>`;
 
@@ -1183,7 +1238,12 @@ function renderChat() {
       sendChatMessage(input.value || "");
     }
   });
+  input?.addEventListener("input", () => {
+    input.style.height = "auto";
+    input.style.height = Math.min(input.scrollHeight, 160) + "px";
+  });
   scrollChatToBottom();
+  input?.focus();
 }
 
 function scrollChatToBottom() {
@@ -1665,10 +1725,10 @@ async function renderUpload() {
   const root = document.getElementById("app-root");
   root.innerHTML = `
     <div class="upload-panel">
-      <div class="drop-zone" id="drop-zone">
-        <p class="drop-title">Sürükle bırak veya dosya seç</p>
-        <p class="meta">.py · .js · .ts · .go · .java · .cs · .zip</p>
-        <label class="file-btn">
+      <div class="drop-zone" id="drop-zone" role="button" tabindex="0" aria-label="Dosya seç veya sürükle bırak">
+        <p class="drop-title">Dosyayı buraya bırakın</p>
+        <p class="meta">veya tıklayarak seçin · .py · .js · .ts · .go · .java · .cs · .zip</p>
+        <label class="file-btn" id="file-btn-label">
           Dosya Seç
           <input id="upload-file" type="file" accept=".py,.txt,.js,.jsx,.ts,.tsx,.go,.java,.cs,.zip,text/plain,application/zip" hidden />
         </label>
@@ -1683,7 +1743,9 @@ async function renderUpload() {
         <span>Proje adı</span>
         <input id="upload-name" type="text" placeholder="Boş bırak = dosya adı" />
       </label>
-      <button class="btn primary" id="upload-submit">Analiz Et</button>
+      <div class="upload-actions">
+        <button class="btn primary" id="upload-submit">Analiz Et</button>
+      </div>
       <p id="upload-status" class="upload-status"></p>
     </div>
     <div id="upload-preview-wrap" hidden></div>`;
@@ -1712,6 +1774,17 @@ async function renderUpload() {
   fileInput.onchange = () => {
     if (fileInput.files?.[0]) setPickedFile(fileInput.files[0]);
   };
+
+  dropZone.addEventListener("click", e => {
+    if (e.target.closest("label") || e.target === fileInput) return;
+    fileInput.click();
+  });
+  dropZone.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      fileInput.click();
+    }
+  });
 
   dropZone.ondragover = e => { e.preventDefault(); dropZone.classList.add("drag"); };
   dropZone.ondragleave = () => dropZone.classList.remove("drag");
@@ -2342,6 +2415,7 @@ async function checkHealth() {
 
 window.addEventListener("hashchange", () => route());
 
+initMobileNav();
 checkHealth();
 ensureToken().then(() => {
   api("/api/v1/projects/overview").then(p => { state.projects = p; renderNav("overview"); }).catch(() => {});

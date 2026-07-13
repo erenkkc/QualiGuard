@@ -56,7 +56,7 @@ func (s *Server) Handler() http.Handler {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-	r.Use(middleware.Timeout(120 * time.Second))
+	r.Use(middleware.Timeout(180 * time.Second))
 	r.Use(SecurityHeaders)
 
 	r.Get("/api/health", s.handleHealth)

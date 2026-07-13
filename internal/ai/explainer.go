@@ -19,9 +19,25 @@ func NewExplainer(enableLLM bool) *Explainer {
 	return &Explainer{provider: BuildProvider(cfg)}
 }
 
-func (e *Explainer) Explain(ctx context.Context, issue model.Issue) model.AIExplanation {
+func (e *Explainer) ensureProvider() Provider {
 	if e.provider != nil && e.provider.Available() {
-		if llm, err := e.provider.ExplainIssue(ctx, issue); err == nil && llm.SummaryTR != "" {
+		return e.provider
+	}
+	cfg := LoadConfig()
+	if !cfg.Enabled {
+		return nil
+	}
+	p := BuildProvider(cfg)
+	if p != nil && p.Available() {
+		e.provider = p
+		return p
+	}
+	return nil
+}
+
+func (e *Explainer) Explain(ctx context.Context, issue model.Issue) model.AIExplanation {
+	if p := e.ensureProvider(); p != nil {
+		if llm, err := p.ExplainIssue(ctx, issue); err == nil && llm.SummaryTR != "" {
 			llm.Source = "llm"
 			return llm
 		}
@@ -39,8 +55,8 @@ func (e *Explainer) ExplainOnDemand(ctx context.Context, issue model.Issue, code
 		return model.AIExplanation{Source: "hint"}
 	}
 
-	if e.provider != nil && e.provider.Available() {
-		reply, err := e.provider.Chat(ctx, []ChatMessage{
+	if p := e.ensureProvider(); p != nil {
+		reply, err := p.Chat(ctx, []ChatMessage{
 			{Role: "user", Content: buildIssueQuestion(issue, q)},
 		})
 		if err == nil && strings.TrimSpace(reply) != "" {
@@ -56,7 +72,7 @@ func (e *Explainer) ExplainOnDemand(ctx context.Context, issue model.Issue, code
 	}
 
 	return model.AIExplanation{
-		SummaryTR: "Yapay zeka kapalı. Ollama'yı başlatıp sunucuyu yeniden çalıştırın.",
+		SummaryTR: "Yapay zeka kapalı. Ollama uygulamasını açın — sunucuyu yeniden başlatmanız gerekmez.",
 		Source:    "template",
 	}
 }
