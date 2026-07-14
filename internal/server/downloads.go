@@ -27,15 +27,15 @@ func (s *Server) catalogDownloads() []downloadItem {
 	return []downloadItem{
 		{
 			ID:          "windows-panel",
-			Title:       "Windows — Tek tık kurulum",
-			Description: "İndir, çift tıkla — kurulum otomatik başlar, panel tarayıcıda açılır.",
+			Title:       "Windows — QualiGuard uygulaması",
+			Description: "İndir, kur — Başlat menüsünde gerçek bir uygulama olarak açılır (splash + giriş).",
 			Platform:    "windows",
 			Filename:    "QualiGuard-Kurulum.exe",
 		},
 		{
 			ID:          "mac-panel",
-			Title:       "Mac — Tek tık kurulum",
-			Description: "Zip'i aç, QualiGuard-Kur.command dosyasına çift tıkla — kurulum otomatik başlar.",
+			Title:       "Mac — QualiGuard uygulaması",
+			Description: "Zip'i aç, QualiGuard-Kur.command ile başlat — splash ve giriş ile açılır.",
 			Platform:    "mac",
 			Filename:    "qualiguard-mac-kurulum.zip",
 		},

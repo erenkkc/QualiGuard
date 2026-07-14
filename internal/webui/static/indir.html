@@ -100,7 +100,7 @@
       </div>
       <div class="dl-head">
         <h1>İndirme merkezin</h1>
-        <p>Önerilen: Tek tık kurulum. İndirdikten sonra dosyaya çift tıklaman yeterli.</p>
+        <p>Önerilen: Masaüstü uygulaması. Kurulumdan sonra Başlat menüsünden QualiGuard gibi açılır.</p>
         <div class="dl-user" id="user-line">Oturum kontrol ediliyor…</div>
       </div>
       <div class="nav-row">
@@ -111,11 +111,11 @@
       <div class="os-grid">
         <article class="os-card" id="card-win">
           <span class="badge" id="badge-win">Windows</span>
-          <h3>Tek tık kurulum</h3>
+          <h3>Masaüstü uygulaması</h3>
           <ol class="os-steps">
-            <li><strong>QualiGuard-Kurulum.exe</strong> indir</li>
-            <li>Dosyaya çift tıkla</li>
-            <li>Kurulum biter, panel tarayıcıda açılır</li>
+            <li><strong>QualiGuard-Kurulum.exe</strong> indir ve aç</li>
+            <li>Uygulama Bilgisayarınıza kurulur (Başlat menüsü + masaüstü)</li>
+            <li>Splash → giriş → panel — tarayıcı değil, uygulama penceresi</li>
           </ol>
           <div class="os-actions">
             <button type="button" class="btn primary" data-id="windows-panel" id="btn-win">Kurulumu indir</button>
@@ -123,11 +123,11 @@
         </article>
         <article class="os-card" id="card-mac">
           <span class="badge" id="badge-mac">Mac</span>
-          <h3>Tek tık kurulum</h3>
+          <h3>Masaüstü başlatıcı</h3>
           <ol class="os-steps">
             <li>Zip dosyasını indir ve aç</li>
             <li><strong>QualiGuard-Kur.command</strong> dosyasına çift tıkla</li>
-            <li>Kurulum biter, panel tarayıcıda açılır</li>
+            <li>Splash ve giriş ekranı ile uygulama açılır</li>
           </ol>
           <div class="os-actions">
             <button type="button" class="btn primary" data-id="mac-panel" id="btn-mac">Kurulumu indir</button>
@@ -168,12 +168,12 @@
       if (platform === "windows") {
         document.getElementById("modal-title").textContent = "Şimdi kurulumu aç";
         document.getElementById("modal-lead").textContent =
-          "Dosya indi. Zip açmana gerek yok — tarayıcının altındaki indirme çubuğundan kurulumu başlat:";
+          "Dosya indi. Tarayıcının altındaki indirme çubuğundan kurulumu başlat — tarayıcıda değil, uygulama penceresinde açılacak:";
         steps.innerHTML = `
-          <li>Sayfanın <strong>altında</strong> görünen <strong>QualiGuard-Kurulum.exe</strong> satırına tıkla (veya ▾ → Aç)</li>
-          <li>Windows “Windows bilgisayarınızı korudu” derse → <strong>Diğer bilgiler</strong> → <strong>Yine de çalıştır</strong></li>
-          <li>Kurulum penceresi paneli kurar ve tarayıcıyı açar</li>
-          <li>Sonraki sefer masaüstündeki <strong>QualiGuard</strong> kısayolunu kullan</li>
+          <li>Alttaki <strong>QualiGuard-Kurulum.exe</strong> satırına tıkla (veya ▾ → Aç)</li>
+          <li>Windows uyarısı çıkarsa → <strong>Diğer bilgiler</strong> → <strong>Yine de çalıştır</strong></li>
+          <li>Kurulum biter; <strong>QualiGuard</strong> uygulama penceresi açılır (splash → giriş)</li>
+          <li>Sonraki sefer: Başlat menüsü veya masaüstündeki QualiGuard</li>
         `;
       } else {
         document.getElementById("modal-title").textContent = "Şimdi kurulumu aç";
