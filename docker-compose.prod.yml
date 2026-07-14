@@ -15,6 +15,7 @@ services:
     volumes:
       - qualiguard-data:/data
       - ./qualiguard.yaml:/app/qualiguard.yaml:ro
+      - ./releases:/app/releases:ro
     environment:
       QG_DATA_DIR: /data
       QG_PANEL_PASSWORD: ${QG_PANEL_PASSWORD:-}

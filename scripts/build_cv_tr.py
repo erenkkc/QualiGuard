@@ -91,8 +91,19 @@ contact = doc.add_paragraph()
 contact.alignment = WD_ALIGN_PARAGRAPH.CENTER
 contact.paragraph_format.space_before = Pt(0)
 contact.paragraph_format.space_after = Pt(2)
-r = contact.add_run("Düzce / Ürgüp, Türkiye  ·  +90 546 296 87 35  ·  ernkck81@gmail.com")
+r = contact.add_run(
+    "Düzce / Ürgüp, Türkiye  ·  +90 546 296 87 35  ·  ernkck81@gmail.com"
+)
 set_run_font(r, size=9.5, color=MUTED)
+
+links = doc.add_paragraph()
+links.alignment = WD_ALIGN_PARAGRAPH.CENTER
+links.paragraph_format.space_before = Pt(0)
+links.paragraph_format.space_after = Pt(2)
+r = links.add_run(
+    "Canlı ürün: https://qualiguard.com.tr    ·    GitHub: https://github.com/erenkkc/QualiGuard"
+)
+set_run_font(r, size=9.5, bold=True, color=ACCENT)
 
 # SUMMARY
 section_heading("Profesyonel Özet")
@@ -101,8 +112,9 @@ summary.paragraph_format.space_after = Pt(2)
 txt = (
     "Kapadokya Üniversitesi Yönetim Bilişim Sistemleri öğrencisi; full-stack geliştirme, yazılım kalite "
     "mühendisliği ve yapay zeka destekli iş akışlarını bir arada yürüten bir profil. SonarQube benzeri "
-    "statik analiz platformu QualiGuard’ı sıfırdan geliştirdi (Go, kalite kapısı, CI/CD, Docker, VS Code "
-    "eklentisi ve yerel LLM / Ollama entegrasyonu). Prompt mühendisliğiyle sistem prompt’ları tasarlayıp "
+    "statik analiz platformu QualiGuard’ı sıfırdan geliştirdi ve https://qualiguard.com.tr adresinde "
+    "HTTPS ile canlıya aldı (Go, kalite kapısı, CI/CD, Docker, VS Code eklentisi, yerel LLM / Ollama). "
+    "Prompt mühendisliğiyle sistem prompt’ları tasarlayıp "
     "halüsinasyonu azaltmaya, geliştiriciler için güvenilir Türkçe YZ asistanı üretmeye odaklanıyor. "
     "PHP/MySQL web projeleri, Cisco ağ temelleri ve kalite kontrol disiplinini birleştirerek staj veya "
     "junior roller için yazılım geliştirme, DevOps araçları, QA ya da yapay zeka ürün ekiplerine hazır."
@@ -133,10 +145,13 @@ bullet(
 section_heading("Öne Çıkan Proje — QualiGuard")
 job_header(
     "QualiGuard — Statik Kod Analizi ve Kalite Kapısı Platformu",
-    "Bağımsız Ürün Geliştirme  ·  Go, Python, JavaScript, REST API, SQLite, Docker, Ollama, VS Code Eklentisi, GitHub Actions",
+    "Canlı: https://qualiguard.com.tr  ·  GitHub: https://github.com/erenkkc/QualiGuard  ·  Go, Python, JS, REST, SQLite, Docker, Ollama, VS Code, GitHub Actions",
 )
 bullet(
-    "SonarQube benzeri bir kod kalitesi platformunu sıfırdan tasarlayıp hayata geçirdi: CLI tarayıcı, analiz sunucusu, web paneli ve kalite kapısı motoru."
+    "SonarQube benzeri kod kalitesi platformunu sıfırdan tasarlayıp qualiguard.com.tr üzerinde HTTPS ile canlıya aldı (VPS, Docker, Caddy, Cloudflare DNS)."
+)
+bullet(
+    "Ürün yüzeyi: CLI tarayıcı, analiz sunucusu, landing page, şifreli panel, white-label, canlı analiz, zip yükleme ve Ollama ile Türkçe YZ sohbet."
 )
 bullet(
     "Çok dilli statik analiz (Python, JavaScript/TypeScript, Go, Java, C#) ile güvenlik kuralları (SQL injection, eval, secret) ve stil denetimi (Ruff, ESLint) uyguladı."
@@ -145,13 +160,10 @@ bullet(
     "Kalite kapıları (GEÇER / UYARI / KALIR), sorun parmak izi, yanlış alarm bastırma, SARIF/JSON/HTML raporlama ve CI için PR yorumları geliştirdi."
 )
 bullet(
-    "Ürün odaklı web arayüzü kurdu: landing page, şifreli panel, white-label markalama, canlı analiz, zip yükleme ve Ollama ile Türkçe YZ sohbet."
-)
-bullet(
     "Geliştirici araçları teslim etti: VS Code / Cursor eklentisi (diagnostics, workspace tarama, hover açıklama) ve otomatik PR kontrolü için GitHub Actions iş akışı."
 )
 bullet(
-    "Docker + Caddy HTTPS dağıtım paketi ve ortam değişkeniyle panel güvenliği hazırlayarak QualiGuard’ı domain’e çıkabilir bir ürün haline getirdi."
+    "Canlı operasyonu üstlendi: Natro VPS, Cloudflare nameserver, Caddy ile Let’s Encrypt, panel şifresi ve Google Search Console index kurulumu."
 )
 
 # OTHER PROJECTS

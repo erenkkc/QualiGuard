@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Giriş — __QG_BRAND_NAME__</title>
+  <title>Kaydol — __QG_BRAND_NAME__</title>
   __QG_THEME_CSS__
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,49 +36,57 @@
 </head>
 <body>
   <div class="login-wrap">
-    <form class="login-card" id="login-form">
-      <h1>__QG_BRAND_NAME__</h1>
-      <p class="lead">Hesabınla giriş yap, sonra paneli veya indirmeleri kullan.</p>
+    <form class="login-card" id="reg-form">
+      <h1>Hesap oluştur</h1>
+      <p class="lead">Kayıt ol, giriş yap, Windows veya Mac paketini indir.</p>
       <div class="tabs">
-        <a class="tab on" href="/login">Giriş</a>
-        <a class="tab" href="/register">Kaydol</a>
+        <a class="tab" href="/login">Giriş</a>
+        <a class="tab on" href="/register">Kaydol</a>
       </div>
       <label class="login-field">
         <span>E-posta</span>
         <input type="email" id="email" autocomplete="email" required autofocus>
       </label>
       <label class="login-field">
-        <span>Şifre</span>
-        <input type="password" id="password" autocomplete="current-password" required>
+        <span>Şifre (en az 6 karakter)</span>
+        <input type="password" id="password" autocomplete="new-password" minlength="6" required>
+      </label>
+      <label class="login-field">
+        <span>Şifre tekrar</span>
+        <input type="password" id="password2" autocomplete="new-password" minlength="6" required>
       </label>
       <p class="login-error" id="login-error"></p>
-      <button type="submit" class="btn primary" style="width:100%">Giriş yap</button>
+      <button type="submit" class="btn primary" style="width:100%">Kaydol</button>
       <a href="/" class="login-back">← Ana sayfa</a>
     </form>
   </div>
   <script>
-    const params = new URLSearchParams(location.search);
-    const next = params.get("next") || "/indir";
-    document.getElementById("login-form").addEventListener("submit", async (e) => {
+    document.getElementById("reg-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const errEl = document.getElementById("login-error");
       errEl.textContent = "";
+      const password = document.getElementById("password").value;
+      const password2 = document.getElementById("password2").value;
+      if (password !== password2) {
+        errEl.textContent = "Şifreler eşleşmiyor";
+        return;
+      }
       try {
-        const res = await fetch("/api/auth/login", {
+        const res = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             email: document.getElementById("email").value.trim(),
-            password: document.getElementById("password").value,
+            password,
           }),
         });
         const body = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(body.error || "Giriş başarısız");
+        if (!res.ok) throw new Error(body.error || "Kayıt başarısız");
         localStorage.setItem("qg_token", body.token);
         if (body.user?.email) localStorage.setItem("qg_email", body.user.email);
-        location.href = next;
+        location.href = "/indir";
       } catch (err) {
-        errEl.textContent = err.message || "Giriş başarısız";
+        errEl.textContent = err.message || "Kayıt başarısız";
       }
     });
   </script>

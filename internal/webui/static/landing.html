@@ -9,10 +9,25 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23121820'/%3E%3Cpath d='M16 4L8 7v6c0 5.5 3.5 10.5 8 11.5 4.5-1 8-6 8-11.5V7l-8-3z' stroke='%234d9fff' stroke-width='1.5' fill='none'/%3E%3Cpath d='M12 16l2.5 2.5L20 13' stroke='%2334c759' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/landing.css?v=1">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/landing.css?v=2">
 </head>
 <body>
+  <div class="intro" id="intro" hidden>
+    <div class="intro-bg" aria-hidden="true"></div>
+    <button type="button" class="intro-skip" id="intro-skip">Atla</button>
+    <div class="intro-stage">
+      <div class="intro-progress" id="intro-progress" aria-hidden="true"></div>
+      <p class="intro-brand">__QG_BRAND_NAME__</p>
+      <h2 class="intro-title" id="intro-title"></h2>
+      <p class="intro-text" id="intro-text"></p>
+      <div class="intro-actions">
+        <button type="button" class="btn" id="intro-prev" hidden>Geri</button>
+        <button type="button" class="btn primary" id="intro-next">Devam</button>
+      </div>
+    </div>
+  </div>
+
   <div class="landing">
     <header class="landing-nav">
       <a href="/" class="logo">
@@ -26,6 +41,11 @@
       </a>
       <nav>
         <a class="link" href="#features">Özellikler</a>
+        <a class="link" href="/indir">İndir</a>
+        <button type="button" class="link intro-replay" id="intro-replay">Tur</button>
+        <a class="link" id="nav-login" href="/login">Giriş</a>
+        <a class="btn" id="nav-register" href="/register">Kaydol</a>
+        <button type="button" class="link" id="nav-logout" hidden>Çıkış</button>
         <a class="btn primary" href="/app">Panele git</a>
       </nav>
     </header>
@@ -34,11 +54,11 @@
       <section class="hero">
         <div class="hero-copy">
           <p class="eyebrow">__QG_BRAND_EYEBROW__</p>
-          <h1>Kodunuzu tarayın.<br><span>Kaliteyi koruyun.</span></h1>
-          <p class="hero-lead">Güvenlik açıkları, stil sorunları ve kapı durumu — tek panelde.</p>
+          <h1>Kodunuz konuşur.<br><span>Biz dinleriz.</span></h1>
+          <p class="hero-lead">Gizli güvenlik açıkları, sessiz stil borçları, kırılan kalite kapıları — hepsi tek panelde görünür hale gelir.</p>
           <div class="hero-actions">
-            <a class="btn primary" href="/app">Analize başla</a>
-            <a class="btn" href="/app#/playground">Canlı analiz</a>
+            <a class="btn primary" href="/register">Ücretsiz kaydol</a>
+            <a class="btn" href="/indir">İndir</a>
           </div>
         </div>
         <div class="hero-visual">
@@ -72,14 +92,14 @@
 
       <section id="features" class="features">
         <div class="section-head">
-          <h2>Ne sunuyor?</h2>
-          <p>SonarQube benzeri akış, yerel kurulum.</p>
+          <h2>Kod kalitesini hissedilir kılın</h2>
+          <p>Sadece rapor değil — karar verebileceğiniz bir kapı.</p>
         </div>
         <div class="feature-grid">
           <article class="feature-card">
             <div class="feature-icon">⌘</div>
             <h3>Canlı analiz</h3>
-            <p>Kodu editörde düzenleyin, sonuç anında gelsin.</p>
+            <p>Kodu yazın, anında tarayın. Beklemek yok.</p>
           </article>
           <article class="feature-card">
             <div class="feature-icon">⬡</div>
@@ -89,22 +109,22 @@
           <article class="feature-card">
             <div class="feature-icon">✓</div>
             <h3>Kalite kapısı</h3>
-            <p>Kritik eşik aşılınca build durur — GEÇER / KALIR.</p>
+            <p>Kritik eşik aşılınca durur — GEÇER / KALIR.</p>
           </article>
           <article class="feature-card">
             <div class="feature-icon">↑</div>
-            <h3>Zip &amp; dosya yükleme</h3>
-            <p>Tek dosya veya proje arşivi — Python, JS, Go.</p>
+            <h3>Dosya &amp; zip</h3>
+            <p>Tek dosya veya proje arşivi yükleyin.</p>
           </article>
           <article class="feature-card">
             <div class="feature-icon">✦</div>
             <h3>YZ asistan</h3>
-            <p>Ollama ile sorun açıklama ve kod sohbeti.</p>
+            <p>Bulguların nedenini Türkçe sorun — net cevap alın.</p>
           </article>
           <article class="feature-card">
-            <div class="feature-icon">▦</div>
-            <h3>VS Code eklentisi</h3>
-            <p>Kaydedince tara — editörde anlık uyarılar.</p>
+            <div class="feature-icon">◫</div>
+            <h3>Proje paneli</h3>
+            <p>Geçmiş taramalar, açık sorunlar, kapı durumu.</p>
           </article>
         </div>
         <div class="languages">
@@ -119,10 +139,10 @@
 
       <section class="cta-band">
         <div>
-          <h2>Hazır mısınız?</h2>
-          <p>Yerel sunucuyu başlatın, paneli açın.</p>
+          <h2>Kaydol → Giriş → İndir</h2>
+          <p>Windows veya Mac paketini indirip bilgisayarında çalıştır.</p>
         </div>
-        <a class="btn primary" href="/app">Panele git →</a>
+        <a class="btn primary" href="/register">Hesap oluştur →</a>
       </section>
     </main>
 
@@ -135,5 +155,126 @@
       </span>
     </footer>
   </div>
+
+  <script>
+    (function () {
+      const KEY = "qg_intro_v1";
+      const steps = [
+        {
+          title: "Kodunuzda gizli bir şey olabilir.",
+          text: "Derlenir. Çalışır. Ama güvenlik açığı, gizli anahtar veya sessiz stil borcu hâlâ orada duruyor olabilir."
+        },
+        {
+          title: "QualiGuard bunu görünür kılar.",
+          text: "Statik analiz + kalite kapısı. Kritik sorun mu var, yoksa yeşil ışık mı — tek bakışta."
+        },
+        {
+          title: "Sadece rapor değil, karar.",
+          text: "Canlı analiz, proje paneli, YZ ile “neden?” sorusu. Merak ettiğiniz yerden başlayın."
+        }
+      ];
+
+      const intro = document.getElementById("intro");
+      const titleEl = document.getElementById("intro-title");
+      const textEl = document.getElementById("intro-text");
+      const progress = document.getElementById("intro-progress");
+      const nextBtn = document.getElementById("intro-next");
+      const prevBtn = document.getElementById("intro-prev");
+      const skipBtn = document.getElementById("intro-skip");
+      const replayBtn = document.getElementById("intro-replay");
+      let i = 0;
+
+      function renderProgress() {
+        progress.innerHTML = steps.map((_, idx) =>
+          `<span class="${idx === i ? "on" : idx < i ? "done" : ""}"></span>`
+        ).join("");
+      }
+
+      function showStep(animate) {
+        const step = steps[i];
+        titleEl.textContent = step.title;
+        textEl.textContent = step.text;
+        prevBtn.hidden = i === 0;
+        nextBtn.textContent = i === steps.length - 1 ? "Keşfet" : "Devam";
+        renderProgress();
+        if (animate) {
+          titleEl.classList.remove("pop");
+          textEl.classList.remove("pop");
+          void titleEl.offsetWidth;
+          titleEl.classList.add("pop");
+          textEl.classList.add("pop");
+        }
+      }
+
+      function openIntro(force) {
+        if (!force && localStorage.getItem(KEY)) return;
+        i = 0;
+        intro.hidden = false;
+        document.body.classList.add("intro-open");
+        showStep(true);
+      }
+
+      function closeIntro() {
+        localStorage.setItem(KEY, "1");
+        intro.classList.add("outro");
+        setTimeout(() => {
+          intro.hidden = true;
+          intro.classList.remove("outro");
+          document.body.classList.remove("intro-open");
+        }, 320);
+      }
+
+      nextBtn.addEventListener("click", () => {
+        if (i >= steps.length - 1) {
+          closeIntro();
+          return;
+        }
+        i += 1;
+        showStep(true);
+      });
+
+      prevBtn.addEventListener("click", () => {
+        if (i === 0) return;
+        i -= 1;
+        showStep(true);
+      });
+
+      skipBtn.addEventListener("click", closeIntro);
+      replayBtn?.addEventListener("click", () => openIntro(true));
+
+      document.addEventListener("keydown", (e) => {
+        if (intro.hidden) return;
+        if (e.key === "Escape") closeIntro();
+        if (e.key === "ArrowRight" || e.key === "Enter") nextBtn.click();
+        if (e.key === "ArrowLeft") prevBtn.click();
+      });
+
+      openIntro(false);
+
+      (function authNav() {
+        const t = localStorage.getItem("qg_token") || "";
+        const ok = t.startsWith("qg_") || t.startsWith("ugs_");
+        const login = document.getElementById("nav-login");
+        const reg = document.getElementById("nav-register");
+        const logout = document.getElementById("nav-logout");
+        if (ok) {
+          if (login) login.hidden = true;
+          if (reg) { reg.textContent = "İndir"; reg.href = "/indir"; }
+          if (logout) logout.hidden = false;
+        }
+        logout?.addEventListener("click", async () => {
+          try {
+            await fetch("/api/auth/logout", {
+              method: "POST",
+              headers: { Authorization: "Bearer " + t },
+            });
+          } catch {}
+          localStorage.removeItem("qg_token");
+          localStorage.removeItem("qg_email");
+          location.reload();
+        });
+      })();
+    })();
+  </script>
 </body>
 </html>

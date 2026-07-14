@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>İndir — __QG_BRAND_NAME__</title>
+  __QG_THEME_CSS__
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/landing.css?v=2">
+  <style>
+    body { font-family: "Instrument Sans", system-ui, sans-serif; }
+    .dl-wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 64px; }
+    .dl-head h1 {
+      font-family: Newsreader, Georgia, serif; font-size: clamp(1.8rem, 4vw, 2.4rem);
+      font-weight: 600; margin: 0 0 8px;
+    }
+    .dl-head p { color: var(--muted); margin: 0 0 28px; }
+    .dl-user { color: var(--accent); font-size: .9rem; margin-bottom: 18px; }
+    .dl-grid { display: grid; gap: 14px; }
+    .dl-card {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+      padding: 20px 22px; border-radius: 14px; background: var(--panel); border: 1px solid var(--border);
+    }
+    .dl-card h3 { margin: 0 0 4px; font-size: 1rem; }
+    .dl-card p { margin: 0; color: var(--muted); font-size: .9rem; }
+    .dl-card .meta { margin-top: 6px; font-size: .75rem; color: var(--muted); }
+    .dl-card.off { opacity: .55; }
+    .nav-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+  <div class="landing">
+    <header class="landing-nav">
+      <a href="/" class="logo">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5.25 3.4 10.15 8 11 4.6-.85 8-5.75 8-11V5l-8-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        __QG_BRAND_NAME__
+      </a>
+      <nav>
+        <a class="link" href="/app">Panel</a>
+        <button type="button" class="link" id="btn-logout">Çıkış</button>
+      </nav>
+    </header>
+    <div class="dl-wrap">
+      <div class="dl-head">
+        <h1>İndir ve bilgisayarında çalıştır</h1>
+        <p>Panel paketini indir, aç, lokalde kullan. İstersen sadece CLI ile tara.</p>
+        <div class="dl-user" id="user-line">Oturum kontrol ediliyor…</div>
+      </div>
+      <div class="nav-row">
+        <a class="btn primary" href="/app">Web panelini aç</a>
+        <a class="btn" href="/">Ana sayfa</a>
+      </div>
+      <div class="dl-grid" id="dl-grid"></div>
+    </div>
+  </div>
+  <script>
+    function token() { return localStorage.getItem("qg_token") || ""; }
+    function isValid(t) { return t && (t.startsWith("qg_") || t.startsWith("ugs_")); }
+
+    async function api(path) {
+      const res = await fetch(path, { headers: { Authorization: "Bearer " + token() } });
+      if (res.status === 401) {
+        location.href = "/login?next=" + encodeURIComponent("/indir");
+        throw new Error("Giriş gerekli");
+      }
+      return res;
+    }
+
+    function fmtSize(n) {
+      if (!n) return "";
+      if (n < 1024) return n + " B";
+      if (n < 1024*1024) return (n/1024).toFixed(1) + " KB";
+      return (n/1024/1024).toFixed(1) + " MB";
+    }
+
+    async function boot() {
+      if (!isValid(token())) {
+        location.href = "/login?next=/indir";
+        return;
+      }
+      try {
+        const me = await api("/api/auth/me").then(r => r.json());
+        document.getElementById("user-line").textContent =
+          "Giriş: " + (me.user?.email || "hesap");
+      } catch {
+        return;
+      }
+
+      const data = await api("/api/v1/downloads").then(r => r.json());
+      const grid = document.getElementById("dl-grid");
+      grid.innerHTML = (data.items || []).map(it => `
+        <article class="dl-card ${it.available ? "" : "off"}">
+          <div>
+            <h3>${it.title}</h3>
+            <p>${it.description}</p>
+            <div class="meta">${it.available ? fmtSize(it.size_bytes) : "Yakında hazırlanacak"}</div>
+          </div>
+          ${it.available
+            ? `<button type="button" class="btn primary" data-id="${it.id}">İndir</button>`
+            : `<button type="button" class="btn" disabled>Hazır değil</button>`}
+        </article>`).join("");
+
+      grid.querySelectorAll("[data-id]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const res = await api("/api/v1/downloads/" + btn.dataset.id);
+          if (!res.ok) {
+            alert("İndirme başarısız");
+            return;
+          }
+          const blob = await res.blob();
+          const dispo = res.headers.get("Content-Disposition") || "";
+          const match = /filename=\"?([^\";]+)\"?/.exec(dispo);
+          const name = match ? match[1] : btn.dataset.id;
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = name;
+          a.click();
+          URL.revokeObjectURL(a.href);
+        });
+      });
+    }
+
+    document.getElementById("btn-logout").addEventListener("click", async () => {
+      try {
+        await fetch("/api/auth/logout", {
+          method: "POST",
+          headers: { Authorization: "Bearer " + token() },
+        });
+      } catch {}
+      localStorage.removeItem("qg_token");
+      localStorage.removeItem("qg_email");
+      location.href = "/";
+    });
+
+    boot();
+  </script>
+</body>
+</html>

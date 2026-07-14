@@ -91,8 +91,19 @@ contact = doc.add_paragraph()
 contact.alignment = WD_ALIGN_PARAGRAPH.CENTER
 contact.paragraph_format.space_before = Pt(0)
 contact.paragraph_format.space_after = Pt(2)
-r = contact.add_run("Düzce / Ürgüp, Turkey  ·  +90 546 296 87 35  ·  ernkck81@gmail.com")
+r = contact.add_run(
+    "Düzce / Ürgüp, Turkey  ·  +90 546 296 87 35  ·  ernkck81@gmail.com"
+)
 set_run_font(r, size=9.5, color=MUTED)
+
+links = doc.add_paragraph()
+links.alignment = WD_ALIGN_PARAGRAPH.CENTER
+links.paragraph_format.space_before = Pt(0)
+links.paragraph_format.space_after = Pt(2)
+r = links.add_run(
+    "Live product: https://qualiguard.com.tr    ·    GitHub: https://github.com/erenkkc/QualiGuard"
+)
+set_run_font(r, size=9.5, bold=True, color=ACCENT)
 
 # SUMMARY
 section_heading("Professional Summary")
@@ -102,8 +113,9 @@ txt = (
     "Driven Management Information Systems student at Kapadokya University with advanced business education "
     "and a rare dual fluency in strategy and technology. Trained at a high academic level in management, "
     "organizational processes, business analytics, and decision-making — then applies that business mindset "
-    "to build real software products. Creator of QualiGuard, a SonarQube-inspired static analysis platform "
-    "(Go, quality gates, CI/CD, Docker, VS Code extension, and local LLM / Ollama). Practices prompt engineering "
+    "to build real software products. Creator of QualiGuard (https://qualiguard.com.tr), a SonarQube-inspired "
+    "static analysis platform live in production with HTTPS — Go, quality gates, CI/CD, Docker, VS Code extension, "
+    "and local LLM / Ollama. Practices prompt engineering "
     "to design reliable system prompts, reduce hallucination, and deliver Turkish-language AI assistance for "
     "developers. Combines rigorous business foundations, PHP/MySQL web projects, Cisco networking, and "
     "quality-control discipline into a profile ready for internship or junior roles in software, product, "
@@ -135,10 +147,13 @@ bullet(
 section_heading("Flagship Project — QualiGuard")
 job_header(
     "QualiGuard — Static Code Analysis & Quality Gate Platform",
-    "Independent Product Build  ·  Go, Python, JavaScript, REST API, SQLite, Docker, Ollama, VS Code Extension, GitHub Actions",
+    "Live: https://qualiguard.com.tr  ·  GitHub: https://github.com/erenkkc/QualiGuard  ·  Go, Python, JS, REST, SQLite, Docker, Ollama, VS Code, GitHub Actions",
 )
 bullet(
-    "Architected and shipped a SonarQube-like code quality platform from scratch: CLI scanner, analysis server, web dashboard, and quality-gate engine."
+    "Architected and shipped a SonarQube-like code quality platform from scratch — now publicly live at qualiguard.com.tr with HTTPS (VPS, Docker, Caddy, Cloudflare DNS)."
+)
+bullet(
+    "Built end-to-end product surface: landing page, authenticated panel, white-label branding, live playground, zip upload, and Turkish AI chat via Ollama."
 )
 bullet(
     "Implemented multi-language static analysis (Python, JavaScript/TypeScript, Go, Java, C#) with security rules (SQL injection, eval, secrets) and style linting (Ruff, ESLint)."
@@ -147,13 +162,10 @@ bullet(
     "Designed quality gates (PASS / WARN / FAIL) with issue fingerprinting, false-positive suppression, SARIF/JSON/HTML export, and PR comment decoration for CI."
 )
 bullet(
-    "Built a production-ready web product surface: landing page, authenticated panel, white-label branding, live playground, zip upload, and Turkish AI chat via Ollama."
-)
-bullet(
     "Delivered developer tooling: VS Code / Cursor extension (diagnostics, workspace scan, hover explanations) and GitHub Actions workflow for automated PR quality checks."
 )
 bullet(
-    "Engineered Docker + Caddy HTTPS deploy packaging and environment-based panel security — positioning QualiGuard as a shippable, domain-ready product."
+    "Owned production ops: Natro VPS, Cloudflare nameservers, Let's Encrypt via Caddy, panel password auth, and Google Search Console indexing setup."
 )
 
 # OTHER PROJECTS

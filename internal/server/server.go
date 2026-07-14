@@ -62,11 +62,16 @@ func (s *Server) Handler() http.Handler {
 	r.Get("/api/health", s.handleHealth)
 	r.Get("/api/public/brand", s.handlePublicConfig)
 	r.Get("/api/public/config", s.handlePublicConfig)
+	r.Post("/api/auth/register", s.handleRegister)
 	r.Post("/api/auth/login", s.handlePanelLogin)
+	r.Post("/api/auth/logout", s.handleLogout)
+	r.Get("/api/auth/me", s.handleMe)
 	r.Get("/api/bootstrap", s.handleBootstrap)
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Use(s.authMiddleware)
+		r.Get("/downloads", s.handleDownloadsList)
+		r.Get("/downloads/{id}", s.handleDownloadFile)
 		r.Get("/projects/overview", s.handleListProjectOverviews)
 		r.Get("/projects", s.handleListProjects)
 		r.Post("/projects", s.handleCreateProject)
@@ -106,7 +111,7 @@ func (s *Server) authMiddleware(next http.Handler) http.Handler {
 		if token == "" {
 			token = r.Header.Get("X-QualiGuard-Token")
 		}
-		if token == "" || !s.store.ValidateToken(r.Context(), token) {
+		if token == "" || !s.store.ValidateAuthToken(r.Context(), token) {
 			writeError(w, http.StatusUnauthorized, "invalid or missing API token")
 			return
 		}

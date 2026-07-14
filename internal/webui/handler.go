@@ -38,6 +38,14 @@ func Handler(auth PanelAuth, brand config.BrandConfig) http.Handler {
 			serveStaticHTML(w, "static/login.html", replacementsWithoutToken(replacements))
 			return
 
+		case path == "/register", path == "/register/":
+			serveStaticHTML(w, "static/register.html", replacementsWithoutToken(replacements))
+			return
+
+		case path == "/indir", path == "/indir/", path == "/download", path == "/download/":
+			serveStaticHTML(w, "static/indir.html", replacementsWithoutToken(replacements))
+			return
+
 		case path == "/app", path == "/app/", path == "/app/index.html":
 			serveStaticHTML(w, "static/index.html", replacements)
 			return

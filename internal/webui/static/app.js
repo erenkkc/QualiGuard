@@ -281,7 +281,7 @@ function editorCtx() {
 }
 
 function isValidToken(token) {
-  return token && token !== "__QG_TOKEN__" && token.startsWith("qg_");
+  return token && token !== "__QG_TOKEN__" && (token.startsWith("qg_") || token.startsWith("ugs_"));
 }
 
 async function resolveToken() {
