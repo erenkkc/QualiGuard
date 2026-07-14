@@ -7,23 +7,52 @@
   __QG_THEME_CSS__
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/landing.css?v=2">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/landing.css?v=3">
   <style>
-    body { font-family: "Instrument Sans", system-ui, sans-serif; }
-    .login-wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
-    .login-card {
-      width: 100%; max-width: 420px; background: var(--panel); border: 1px solid var(--border);
-      border-radius: 18px; padding: 32px 28px; box-shadow: 0 24px 64px rgba(0,0,0,.35);
+    body { font-family: "Instrument Sans", system-ui, sans-serif; margin: 0; }
+    .reg-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
     }
-    .login-card h1 { margin: 0 0 6px; font-size: 1.35rem; }
-    .login-card .lead { margin: 0 0 20px; color: var(--muted); font-size: .92rem; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-    .tab {
-      flex: 1; text-align: center; padding: 10px; border-radius: 10px; text-decoration: none;
-      color: var(--muted); border: 1px solid var(--border); font-weight: 600; font-size: .88rem;
+    .reg-story {
+      padding: clamp(32px, 6vw, 64px);
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(77,159,255,.22), transparent 50%),
+        linear-gradient(160deg, #0a1018 0%, #071018 50%, #0b1520 100%);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
-    .tab.on { color: var(--text); border-color: rgba(77,159,255,.45); background: rgba(77,159,255,.1); }
+    .reg-story .brand {
+      font-size: .75rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--accent); margin: 0 0 20px;
+    }
+    .reg-story h1 {
+      margin: 0 0 14px; font-family: Newsreader, Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 600; line-height: 1.15;
+    }
+    .reg-story .sub { margin: 0 0 32px; color: var(--muted); max-width: 380px; font-size: 1.05rem; }
+    .steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+    .steps li {
+      display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start;
+    }
+    .steps .n {
+      width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
+      background: rgba(77,159,255,.12); border: 1px solid rgba(77,159,255,.3);
+      color: var(--accent); font-weight: 700; font-size: .85rem;
+    }
+    .steps strong { display: block; margin-bottom: 2px; }
+    .steps span { color: var(--muted); font-size: .88rem; }
+    .reg-form-wrap {
+      display: grid; place-items: center; padding: 32px 20px;
+      background: #070a0f;
+    }
+    .reg-card { width: 100%; max-width: 400px; }
+    .reg-card h2 { margin: 0 0 6px; font-size: 1.4rem; }
+    .reg-card .lead { margin: 0 0 22px; color: var(--muted); font-size: .92rem; }
     .login-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
     .login-field span { font-size: .85rem; color: var(--muted); }
     .login-field input {
@@ -31,34 +60,57 @@
       background: rgba(255,255,255,.03); color: var(--text); font: inherit;
     }
     .login-error { color: #ff8a8a; font-size: .88rem; min-height: 1.2em; margin: 0 0 12px; }
-    .login-back { display: block; margin-top: 16px; text-align: center; color: var(--muted); font-size: .85rem; text-decoration: none; }
+    .foot { margin-top: 18px; text-align: center; color: var(--muted); font-size: .88rem; }
+    .foot a { color: var(--accent); text-decoration: none; }
+    @media (max-width: 860px) {
+      .reg-shell { grid-template-columns: 1fr; }
+      .reg-story { border-right: 0; border-bottom: 1px solid var(--border); padding: 28px 20px; }
+      .reg-story h1 { font-size: 1.7rem; }
+    }
   </style>
 </head>
 <body>
-  <div class="login-wrap">
-    <form class="login-card" id="reg-form">
-      <h1>Hesap oluştur</h1>
-      <p class="lead">Kayıt ol, giriş yap, Windows veya Mac paketini indir.</p>
-      <div class="tabs">
-        <a class="tab" href="/login">Giriş</a>
-        <a class="tab on" href="/register">Kaydol</a>
-      </div>
-      <label class="login-field">
-        <span>E-posta</span>
-        <input type="email" id="email" autocomplete="email" required autofocus>
-      </label>
-      <label class="login-field">
-        <span>Şifre (en az 6 karakter)</span>
-        <input type="password" id="password" autocomplete="new-password" minlength="6" required>
-      </label>
-      <label class="login-field">
-        <span>Şifre tekrar</span>
-        <input type="password" id="password2" autocomplete="new-password" minlength="6" required>
-      </label>
-      <p class="login-error" id="login-error"></p>
-      <button type="submit" class="btn primary" style="width:100%">Kaydol</button>
-      <a href="/" class="login-back">← Ana sayfa</a>
-    </form>
+  <div class="reg-shell">
+    <aside class="reg-story">
+      <p class="brand">__QG_BRAND_NAME__</p>
+      <h1>Üye ol.<br>Paketini indir.<br>Kodunu tara.</h1>
+      <p class="sub">Kayıt tamamen ücretsiz. Hesabın açılınca Windows veya Mac paketini hemen alırsın.</p>
+      <ol class="steps">
+        <li>
+          <div class="n">1</div>
+          <div><strong>Hesap oluştur</strong><span>E-posta + şifre — bir dakika</span></div>
+        </li>
+        <li>
+          <div class="n">2</div>
+          <div><strong>Paketini seç</strong><span>Panel zip veya CLI indir</span></div>
+        </li>
+        <li>
+          <div class="n">3</div>
+          <div><strong>Bilgisayarında çalıştır</strong><span>BASLA / start.sh ile lokal panel</span></div>
+        </li>
+      </ol>
+    </aside>
+    <div class="reg-form-wrap">
+      <form class="reg-card" id="reg-form">
+        <h2>Hesap oluştur</h2>
+        <p class="lead">Kayıttan sonra doğrudan indirme ekranına geçersin.</p>
+        <label class="login-field">
+          <span>E-posta</span>
+          <input type="email" id="email" autocomplete="email" required autofocus>
+        </label>
+        <label class="login-field">
+          <span>Şifre (en az 6 karakter)</span>
+          <input type="password" id="password" autocomplete="new-password" minlength="6" required>
+        </label>
+        <label class="login-field">
+          <span>Şifre tekrar</span>
+          <input type="password" id="password2" autocomplete="new-password" minlength="6" required>
+        </label>
+        <p class="login-error" id="login-error"></p>
+        <button type="submit" class="btn primary" style="width:100%">Oluştur ve indir →</button>
+        <p class="foot">Zaten hesabın var mı? <a href="/login">Giriş yap</a> · <a href="/">Ana sayfa</a></p>
+      </form>
+    </div>
   </div>
   <script>
     document.getElementById("reg-form").addEventListener("submit", async (e) => {
@@ -66,8 +118,7 @@
       const errEl = document.getElementById("login-error");
       errEl.textContent = "";
       const password = document.getElementById("password").value;
-      const password2 = document.getElementById("password2").value;
-      if (password !== password2) {
+      if (password !== document.getElementById("password2").value) {
         errEl.textContent = "Şifreler eşleşmiyor";
         return;
       }
@@ -84,7 +135,7 @@
         if (!res.ok) throw new Error(body.error || "Kayıt başarısız");
         localStorage.setItem("qg_token", body.token);
         if (body.user?.email) localStorage.setItem("qg_email", body.user.email);
-        location.href = "/indir";
+        location.href = "/indir?welcome=1";
       } catch (err) {
         errEl.textContent = err.message || "Kayıt başarısız";
       }

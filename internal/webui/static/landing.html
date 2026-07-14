@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/landing.css?v=2">
+  <link rel="stylesheet" href="/assets/landing.css?v=3">
 </head>
 <body>
   <div class="intro" id="intro" hidden>
@@ -18,6 +18,7 @@
     <button type="button" class="intro-skip" id="intro-skip">Atla</button>
     <div class="intro-stage">
       <div class="intro-progress" id="intro-progress" aria-hidden="true"></div>
+      <div class="intro-visual" id="intro-visual" aria-hidden="true"></div>
       <p class="intro-brand">__QG_BRAND_NAME__</p>
       <h2 class="intro-title" id="intro-title"></h2>
       <p class="intro-text" id="intro-text"></p>
@@ -92,39 +93,24 @@
 
       <section id="features" class="features">
         <div class="section-head">
-          <h2>Kod kalitesini hissedilir kılın</h2>
-          <p>Sadece rapor değil — karar verebileceğiniz bir kapı.</p>
+          <h2>Nasıl çalışır?</h2>
+          <p>Üç adım. Kart değil — net bir yol.</p>
         </div>
-        <div class="feature-grid">
-          <article class="feature-card">
-            <div class="feature-icon">⌘</div>
-            <h3>Canlı analiz</h3>
-            <p>Kodu yazın, anında tarayın. Beklemek yok.</p>
+        <div class="path-steps">
+          <article class="path-step">
+            <span class="path-n">01</span>
+            <h3>Kaydol</h3>
+            <p>Ücretsiz hesap. Bir dakika sürer.</p>
           </article>
-          <article class="feature-card">
-            <div class="feature-icon">⬡</div>
-            <h3>Güvenlik taraması</h3>
-            <p>SQL injection, eval, hardcoded secret ve daha fazlası.</p>
+          <article class="path-step">
+            <span class="path-n">02</span>
+            <h3>İndir</h3>
+            <p>Windows veya Mac panel paketi.</p>
           </article>
-          <article class="feature-card">
-            <div class="feature-icon">✓</div>
-            <h3>Kalite kapısı</h3>
-            <p>Kritik eşik aşılınca durur — GEÇER / KALIR.</p>
-          </article>
-          <article class="feature-card">
-            <div class="feature-icon">↑</div>
-            <h3>Dosya &amp; zip</h3>
-            <p>Tek dosya veya proje arşivi yükleyin.</p>
-          </article>
-          <article class="feature-card">
-            <div class="feature-icon">✦</div>
-            <h3>YZ asistan</h3>
-            <p>Bulguların nedenini Türkçe sorun — net cevap alın.</p>
-          </article>
-          <article class="feature-card">
-            <div class="feature-icon">◫</div>
-            <h3>Proje paneli</h3>
-            <p>Geçmiş taramalar, açık sorunlar, kapı durumu.</p>
+          <article class="path-step">
+            <span class="path-n">03</span>
+            <h3>Tara</h3>
+            <p>Lokal panelde güvenlik + kalite kapısı.</p>
           </article>
         </div>
         <div class="languages">
@@ -158,31 +144,41 @@
 
   <script>
     (function () {
-      const KEY = "qg_intro_v1";
+      const KEY = "qg_intro_v2";
       const steps = [
         {
-          title: "Kodunuzda gizli bir şey olabilir.",
-          text: "Derlenir. Çalışır. Ama güvenlik açığı, gizli anahtar veya sessiz stil borcu hâlâ orada duruyor olabilir."
+          visual: "scan",
+          title: "Kod çalışıyor diye güvenli mi?",
+          text: "Çoğu açık derleme hatası vermez. QualiGuard sessiz riskleri tarar."
         },
         {
-          title: "QualiGuard bunu görünür kılar.",
-          text: "Statik analiz + kalite kapısı. Kritik sorun mu var, yoksa yeşil ışık mı — tek bakışta."
+          visual: "gate",
+          title: "Kırmızı ışık, yeşil ışık.",
+          text: "Kalite kapısı: kritik sorun varsa KALIR. Temizse GEÇER. Karar net."
         },
         {
-          title: "Sadece rapor değil, karar.",
-          text: "Canlı analiz, proje paneli, YZ ile “neden?” sorusu. Merak ettiğiniz yerden başlayın."
+          visual: "download",
+          title: "Kaydol. İndir. Çalıştır.",
+          text: "Windows veya Mac paketi — bilgisayarında kendi paneline sahip ol."
         }
       ];
 
       const intro = document.getElementById("intro");
       const titleEl = document.getElementById("intro-title");
       const textEl = document.getElementById("intro-text");
+      const visualEl = document.getElementById("intro-visual");
       const progress = document.getElementById("intro-progress");
       const nextBtn = document.getElementById("intro-next");
       const prevBtn = document.getElementById("intro-prev");
       const skipBtn = document.getElementById("intro-skip");
       const replayBtn = document.getElementById("intro-replay");
       let i = 0;
+
+      const visuals = {
+        scan: `<div class="iv-panel"><div class="iv-line warn"></div><div class="iv-line"></div><div class="iv-line danger"></div><div class="iv-tag">gizli risk</div></div>`,
+        gate: `<div class="iv-gate"><span class="fail">KALIR</span><span class="pass">GEÇER</span></div>`,
+        download: `<div class="iv-dl"><span>Windows</span><span>Mac</span></div>`,
+      };
 
       function renderProgress() {
         progress.innerHTML = steps.map((_, idx) =>
@@ -194,15 +190,16 @@
         const step = steps[i];
         titleEl.textContent = step.title;
         textEl.textContent = step.text;
+        visualEl.innerHTML = visuals[step.visual] || "";
         prevBtn.hidden = i === 0;
-        nextBtn.textContent = i === steps.length - 1 ? "Keşfet" : "Devam";
+        nextBtn.textContent = i === steps.length - 1 ? "Kaydol / Keşfet" : "Devam";
         renderProgress();
         if (animate) {
-          titleEl.classList.remove("pop");
-          textEl.classList.remove("pop");
-          void titleEl.offsetWidth;
-          titleEl.classList.add("pop");
-          textEl.classList.add("pop");
+          [titleEl, textEl, visualEl].forEach(el => {
+            el.classList.remove("pop");
+            void el.offsetWidth;
+            el.classList.add("pop");
+          });
         }
       }
 
@@ -214,19 +211,20 @@
         showStep(true);
       }
 
-      function closeIntro() {
+      function closeIntro(goRegister) {
         localStorage.setItem(KEY, "1");
         intro.classList.add("outro");
         setTimeout(() => {
           intro.hidden = true;
           intro.classList.remove("outro");
           document.body.classList.remove("intro-open");
-        }, 320);
+          if (goRegister) location.href = "/register";
+        }, 280);
       }
 
       nextBtn.addEventListener("click", () => {
         if (i >= steps.length - 1) {
-          closeIntro();
+          closeIntro(true);
           return;
         }
         i += 1;
@@ -239,12 +237,12 @@
         showStep(true);
       });
 
-      skipBtn.addEventListener("click", closeIntro);
+      skipBtn.addEventListener("click", () => closeIntro(false));
       replayBtn?.addEventListener("click", () => openIntro(true));
 
       document.addEventListener("keydown", (e) => {
         if (intro.hidden) return;
-        if (e.key === "Escape") closeIntro();
+        if (e.key === "Escape") closeIntro(false);
         if (e.key === "ArrowRight" || e.key === "Enter") nextBtn.click();
         if (e.key === "ArrowLeft") prevBtn.click();
       });

@@ -7,42 +7,52 @@
   __QG_THEME_CSS__
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/landing.css?v=2">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/landing.css?v=3">
   <style>
-    body { font-family: "Instrument Sans", system-ui, sans-serif; }
-    .login-wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+    body { font-family: "Instrument Sans", system-ui, sans-serif; margin: 0; }
+    .login-shell {
+      min-height: 100vh; display: grid; place-items: center; padding: 28px 16px;
+      background:
+        radial-gradient(ellipse 50% 40% at 50% 0%, rgba(77,159,255,.12), transparent 60%),
+        #070a0f;
+    }
     .login-card {
-      width: 100%; max-width: 420px; background: var(--panel); border: 1px solid var(--border);
-      border-radius: 18px; padding: 32px 28px; box-shadow: 0 24px 64px rgba(0,0,0,.35);
+      width: 100%; max-width: 380px; text-align: center;
+      padding: 36px 28px 28px; border-radius: 20px;
+      background: #0f141c; border: 1px solid var(--border);
+      box-shadow: 0 24px 60px rgba(0,0,0,.4);
     }
-    .login-card h1 { margin: 0 0 6px; font-size: 1.35rem; }
-    .login-card .lead { margin: 0 0 20px; color: var(--muted); font-size: .92rem; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-    .tab {
-      flex: 1; text-align: center; padding: 10px; border-radius: 10px; text-decoration: none;
-      color: var(--muted); border: 1px solid var(--border); font-weight: 600; font-size: .88rem;
+    .mark {
+      width: 48px; height: 48px; margin: 0 auto 16px; border-radius: 12px;
+      display: grid; place-items: center; color: var(--accent);
+      background: rgba(77,159,255,.12); border: 1px solid rgba(77,159,255,.28);
     }
-    .tab.on { color: var(--text); border-color: rgba(77,159,255,.45); background: rgba(77,159,255,.1); }
-    .login-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .mark svg { width: 26px; height: 26px; }
+    .login-card h1 {
+      margin: 0 0 6px; font-family: Newsreader, Georgia, serif;
+      font-size: 1.75rem; font-weight: 600;
+    }
+    .login-card .lead { margin: 0 0 24px; color: var(--muted); font-size: .95rem; }
+    .login-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; text-align: left; }
     .login-field span { font-size: .85rem; color: var(--muted); }
     .login-field input {
       padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border);
       background: rgba(255,255,255,.03); color: var(--text); font: inherit;
     }
-    .login-error { color: #ff8a8a; font-size: .88rem; min-height: 1.2em; margin: 0 0 12px; }
-    .login-back { display: block; margin-top: 16px; text-align: center; color: var(--muted); font-size: .85rem; text-decoration: none; }
+    .login-error { color: #ff8a8a; font-size: .88rem; min-height: 1.2em; margin: 0 0 12px; text-align: left; }
+    .foot { margin-top: 18px; color: var(--muted); font-size: .88rem; }
+    .foot a { color: var(--accent); text-decoration: none; }
   </style>
 </head>
 <body>
-  <div class="login-wrap">
+  <div class="login-shell">
     <form class="login-card" id="login-form">
-      <h1>__QG_BRAND_NAME__</h1>
-      <p class="lead">Hesabınla giriş yap, sonra paneli veya indirmeleri kullan.</p>
-      <div class="tabs">
-        <a class="tab on" href="/login">Giriş</a>
-        <a class="tab" href="/register">Kaydol</a>
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5.25 3.4 10.15 8 11 4.6-.85 8-5.75 8-11V5l-8-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
+      <h1>Tekrar hoş geldin</h1>
+      <p class="lead">Hesabına gir — indirmelerin ve panel seni bekliyor.</p>
       <label class="login-field">
         <span>E-posta</span>
         <input type="email" id="email" autocomplete="email" required autofocus>
@@ -53,7 +63,7 @@
       </label>
       <p class="login-error" id="login-error"></p>
       <button type="submit" class="btn primary" style="width:100%">Giriş yap</button>
-      <a href="/" class="login-back">← Ana sayfa</a>
+      <p class="foot">Hesabın yok mu? <a href="/register">Kaydol</a> · <a href="/">Ana sayfa</a></p>
     </form>
   </div>
   <script>

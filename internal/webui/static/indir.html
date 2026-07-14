@@ -8,26 +8,52 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/landing.css?v=2">
+  <link rel="stylesheet" href="/assets/landing.css?v=3">
   <style>
     body { font-family: "Instrument Sans", system-ui, sans-serif; }
-    .dl-wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 64px; }
+    .dl-wrap { max-width: 920px; margin: 0 auto; padding: 28px 20px 72px; }
+    .welcome {
+      display: none; margin-bottom: 28px; padding: 22px 24px; border-radius: 16px;
+      background: linear-gradient(135deg, rgba(52,199,89,.12), rgba(77,159,255,.1));
+      border: 1px solid rgba(52,199,89,.35);
+    }
+    .welcome.on { display: block; }
+    .welcome h2 { margin: 0 0 6px; font-size: 1.25rem; }
+    .welcome p { margin: 0; color: var(--muted); }
     .dl-head h1 {
-      font-family: Newsreader, Georgia, serif; font-size: clamp(1.8rem, 4vw, 2.4rem);
+      font-family: Newsreader, Georgia, serif; font-size: clamp(1.9rem, 4vw, 2.5rem);
       font-weight: 600; margin: 0 0 8px;
     }
-    .dl-head p { color: var(--muted); margin: 0 0 28px; }
-    .dl-user { color: var(--accent); font-size: .9rem; margin-bottom: 18px; }
-    .dl-grid { display: grid; gap: 14px; }
+    .dl-head p { color: var(--muted); margin: 0 0 10px; }
+    .dl-user { color: var(--accent); font-size: .9rem; margin-bottom: 22px; }
+    .os-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px;
+    }
+    .os-card {
+      padding: 26px 22px; border-radius: 18px; border: 1px solid var(--border);
+      background: var(--panel); display: flex; flex-direction: column; gap: 12px;
+      min-height: 200px;
+    }
+    .os-card .badge {
+      align-self: flex-start; font-size: .72rem; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--accent);
+      padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(77,159,255,.3);
+      background: rgba(77,159,255,.08);
+    }
+    .os-card h3 { margin: 0; font-size: 1.25rem; }
+    .os-card p { margin: 0; color: var(--muted); flex: 1; font-size: .92rem; }
+    .os-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .cli-block h2 { margin: 0 0 12px; font-size: 1.1rem; }
+    .dl-grid { display: grid; gap: 12px; }
     .dl-card {
       display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-      padding: 20px 22px; border-radius: 14px; background: var(--panel); border: 1px solid var(--border);
+      padding: 16px 18px; border-radius: 12px; background: rgba(255,255,255,.02); border: 1px solid var(--border);
     }
-    .dl-card h3 { margin: 0 0 4px; font-size: 1rem; }
-    .dl-card p { margin: 0; color: var(--muted); font-size: .9rem; }
-    .dl-card .meta { margin-top: 6px; font-size: .75rem; color: var(--muted); }
-    .dl-card.off { opacity: .55; }
-    .nav-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+    .dl-card h3 { margin: 0 0 2px; font-size: .95rem; }
+    .dl-card p { margin: 0; color: var(--muted); font-size: .85rem; }
+    .dl-card.off { opacity: .5; }
+    .nav-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    @media (max-width: 720px) { .os-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -45,16 +71,43 @@
       </nav>
     </header>
     <div class="dl-wrap">
+      <div class="welcome" id="welcome">
+        <h2>Hesabın hazır</h2>
+        <p>Şimdi işletim sistemini seç — paneli indirip bilgisayarında çalıştır.</p>
+      </div>
       <div class="dl-head">
-        <h1>İndir ve bilgisayarında çalıştır</h1>
-        <p>Panel paketini indir, aç, lokalde kullan. İstersen sadece CLI ile tara.</p>
+        <h1>İndirme merkezin</h1>
+        <p>Önerilen: Panel paketi. Çift tıkla / start.sh ile lokal panel açılır.</p>
         <div class="dl-user" id="user-line">Oturum kontrol ediliyor…</div>
       </div>
       <div class="nav-row">
-        <a class="btn primary" href="/app">Web panelini aç</a>
+        <a class="btn" href="/app">Web panelini aç</a>
         <a class="btn" href="/">Ana sayfa</a>
       </div>
-      <div class="dl-grid" id="dl-grid"></div>
+
+      <div class="os-grid">
+        <article class="os-card">
+          <span class="badge">Windows</span>
+          <h3>Panel paketi</h3>
+          <p>Zip’i aç → <strong>BASLA.bat</strong>. Tarayıcıda lokal panel açılır.</p>
+          <div class="os-actions">
+            <button type="button" class="btn primary" data-id="windows-panel" id="btn-win">Windows indir</button>
+          </div>
+        </article>
+        <article class="os-card">
+          <span class="badge">Mac</span>
+          <h3>Panel paketi</h3>
+          <p>Zip’i aç → Terminal’de <strong>./start.sh</strong>. Lokal panel başlar.</p>
+          <div class="os-actions">
+            <button type="button" class="btn primary" data-id="mac-panel" id="btn-mac">Mac indir</button>
+          </div>
+        </article>
+      </div>
+
+      <div class="cli-block">
+        <h2>İleri seviye — sadece CLI</h2>
+        <div class="dl-grid" id="dl-grid"></div>
+      </div>
     </div>
   </div>
   <script>
@@ -70,11 +123,21 @@
       return res;
     }
 
-    function fmtSize(n) {
-      if (!n) return "";
-      if (n < 1024) return n + " B";
-      if (n < 1024*1024) return (n/1024).toFixed(1) + " KB";
-      return (n/1024/1024).toFixed(1) + " MB";
+    async function downloadId(id) {
+      const res = await api("/api/v1/downloads/" + id);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        alert(body.error || "İndirme başarısız — paket henüz sunucuda olmayabilir.");
+        return;
+      }
+      const blob = await res.blob();
+      const dispo = res.headers.get("Content-Disposition") || "";
+      const match = /filename=\"?([^\";]+)\"?/.exec(dispo);
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = match ? match[1] : id;
+      a.click();
+      URL.revokeObjectURL(a.href);
     }
 
     async function boot() {
@@ -82,54 +145,49 @@
         location.href = "/login?next=/indir";
         return;
       }
+      if (new URLSearchParams(location.search).get("welcome") === "1") {
+        document.getElementById("welcome").classList.add("on");
+      }
       try {
         const me = await api("/api/auth/me").then(r => r.json());
-        document.getElementById("user-line").textContent =
-          "Giriş: " + (me.user?.email || "hesap");
-      } catch {
-        return;
-      }
+        document.getElementById("user-line").textContent = "Giriş: " + (me.user?.email || "hesap");
+      } catch { return; }
 
       const data = await api("/api/v1/downloads").then(r => r.json());
-      const grid = document.getElementById("dl-grid");
-      grid.innerHTML = (data.items || []).map(it => `
+      const byId = Object.fromEntries((data.items || []).map(i => [i.id, i]));
+
+      ["windows-panel", "mac-panel"].forEach(id => {
+        const btn = document.querySelector(`[data-id="${id}"]`);
+        const it = byId[id];
+        if (!it?.available) {
+          btn.textContent = "Hazır değil";
+          btn.disabled = true;
+          btn.classList.remove("primary");
+        } else {
+          btn.addEventListener("click", () => downloadId(id));
+        }
+      });
+
+      const cli = (data.items || []).filter(i => i.id.includes("cli"));
+      document.getElementById("dl-grid").innerHTML = cli.map(it => `
         <article class="dl-card ${it.available ? "" : "off"}">
           <div>
             <h3>${it.title}</h3>
             <p>${it.description}</p>
-            <div class="meta">${it.available ? fmtSize(it.size_bytes) : "Yakında hazırlanacak"}</div>
           </div>
           ${it.available
-            ? `<button type="button" class="btn primary" data-id="${it.id}">İndir</button>`
+            ? `<button type="button" class="btn" data-cli="${it.id}">İndir</button>`
             : `<button type="button" class="btn" disabled>Hazır değil</button>`}
         </article>`).join("");
 
-      grid.querySelectorAll("[data-id]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const res = await api("/api/v1/downloads/" + btn.dataset.id);
-          if (!res.ok) {
-            alert("İndirme başarısız");
-            return;
-          }
-          const blob = await res.blob();
-          const dispo = res.headers.get("Content-Disposition") || "";
-          const match = /filename=\"?([^\";]+)\"?/.exec(dispo);
-          const name = match ? match[1] : btn.dataset.id;
-          const a = document.createElement("a");
-          a.href = URL.createObjectURL(blob);
-          a.download = name;
-          a.click();
-          URL.revokeObjectURL(a.href);
-        });
+      document.querySelectorAll("[data-cli]").forEach(btn => {
+        btn.addEventListener("click", () => downloadId(btn.dataset.cli));
       });
     }
 
     document.getElementById("btn-logout").addEventListener("click", async () => {
       try {
-        await fetch("/api/auth/logout", {
-          method: "POST",
-          headers: { Authorization: "Bearer " + token() },
-        });
+        await fetch("/api/auth/logout", { method: "POST", headers: { Authorization: "Bearer " + token() } });
       } catch {}
       localStorage.removeItem("qg_token");
       localStorage.removeItem("qg_email");
