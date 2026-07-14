@@ -24,6 +24,8 @@ func (s *Server) handlePublicConfig(w http.ResponseWriter, r *http.Request) {
 		"brand":         s.brand,
 		"auth_required": s.panelAuthRequired(),
 		"user_auth":     true,
+		"public_site":   s.publicSite,
+		"workstation":   !s.publicSite,
 	})
 }
 

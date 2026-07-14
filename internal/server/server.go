@@ -30,6 +30,12 @@ type Server struct {
 	configPath    string
 	brand         config.BrandConfig
 	panelPassword string
+	publicSite    bool
+}
+
+func publicSiteFromEnv() bool {
+	v := strings.TrimSpace(strings.ToLower(os.Getenv("QG_PUBLIC_SITE")))
+	return v == "1" || v == "true" || v == "yes" || v == "on"
 }
 
 func New(s *store.Store, token, workDir, configPath string) *Server {
@@ -47,6 +53,7 @@ func New(s *store.Store, token, workDir, configPath string) *Server {
 		configPath:    configPath,
 		brand:         brand.WithDefaults(),
 		panelPassword: panelPasswordFromEnv(),
+		publicSite:    publicSiteFromEnv(),
 	}
 }
 
@@ -70,35 +77,39 @@ func (s *Server) Handler() http.Handler {
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Use(s.authMiddleware)
+		// Website: only downloads. Workstation panel APIs stay on desktop app.
 		r.Get("/downloads", s.handleDownloadsList)
 		r.Get("/downloads/{id}", s.handleDownloadFile)
-		r.Get("/projects/overview", s.handleListProjectOverviews)
-		r.Get("/projects", s.handleListProjects)
-		r.Post("/projects", s.handleCreateProject)
-		r.Get("/projects/{key}", s.handleGetProject)
-		r.Get("/projects/{key}/overview", s.handleGetProjectOverview)
-		r.Get("/projects/{key}/gate", s.handleGetProjectGate)
-		r.Get("/projects/{key}/history", s.handleGetProjectHistory)
-		r.Get("/projects/{key}/issues", s.handleListIssues)
-		r.Patch("/projects/{key}/issues/{id}", s.handleResolveIssue)
-		r.Post("/projects/bulk-delete", s.handleBulkDeleteProjects)
-		r.Delete("/projects/{key}", s.handleDeleteProject)
-		r.Get("/projects/{key}/export", s.handleExportProject)
-		r.Get("/projects/{key}/measures", s.handleGetMeasures)
-		r.Post("/projects/{key}/rescan", s.handleProjectRescan)
-		r.Get("/demo/{name}", s.handleDemoSample)
-		r.Get("/history", s.handleGlobalHistory)
-		r.Post("/import/preview", s.handleImportPreview)
-		r.Post("/import/file", s.handleImportFile)
-		r.Post("/analyses", s.handleUploadAnalysis)
-		r.Post("/analyze/code", s.handleAnalyzeCode)
-		r.Post("/explain/issue", s.handleExplainIssue)
-		r.Post("/chat", s.handleAIChat)
+		if !s.publicSite {
+			r.Get("/projects/overview", s.handleListProjectOverviews)
+			r.Get("/projects", s.handleListProjects)
+			r.Post("/projects", s.handleCreateProject)
+			r.Get("/projects/{key}", s.handleGetProject)
+			r.Get("/projects/{key}/overview", s.handleGetProjectOverview)
+			r.Get("/projects/{key}/gate", s.handleGetProjectGate)
+			r.Get("/projects/{key}/history", s.handleGetProjectHistory)
+			r.Get("/projects/{key}/issues", s.handleListIssues)
+			r.Patch("/projects/{key}/issues/{id}", s.handleResolveIssue)
+			r.Post("/projects/bulk-delete", s.handleBulkDeleteProjects)
+			r.Delete("/projects/{key}", s.handleDeleteProject)
+			r.Get("/projects/{key}/export", s.handleExportProject)
+			r.Get("/projects/{key}/measures", s.handleGetMeasures)
+			r.Post("/projects/{key}/rescan", s.handleProjectRescan)
+			r.Get("/demo/{name}", s.handleDemoSample)
+			r.Get("/history", s.handleGlobalHistory)
+			r.Post("/import/preview", s.handleImportPreview)
+			r.Post("/import/file", s.handleImportFile)
+			r.Post("/analyses", s.handleUploadAnalysis)
+			r.Post("/analyze/code", s.handleAnalyzeCode)
+			r.Post("/explain/issue", s.handleExplainIssue)
+			r.Post("/chat", s.handleAIChat)
+		}
 	})
 
 	r.Handle("/*", webui.Handler(webui.PanelAuth{
-		InjectToken: !s.panelAuthRequired(),
+		InjectToken: !s.panelAuthRequired() && !s.publicSite,
 		Token:       s.token,
+		PublicSite:  s.publicSite,
 	}, s.brand))
 
 	return r
@@ -120,6 +131,10 @@ func (s *Server) authMiddleware(next http.Handler) http.Handler {
 }
 
 func (s *Server) handleBootstrap(w http.ResponseWriter, r *http.Request) {
+	if s.publicSite {
+		writeError(w, http.StatusForbidden, "panel yalnızca masaüstü uygulamasında")
+		return
+	}
 	if s.panelAuthRequired() {
 		writeError(w, http.StatusForbidden, "use /api/auth/login")
 		return

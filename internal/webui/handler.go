@@ -11,6 +11,8 @@ import (
 type PanelAuth struct {
 	InjectToken bool
 	Token       string
+	// PublicSite: website only (marketing + account + download). No workstation panel.
+	PublicSite bool
 }
 
 func Handler(auth PanelAuth, brand config.BrandConfig) http.Handler {
@@ -21,7 +23,7 @@ func Handler(auth PanelAuth, brand config.BrandConfig) http.Handler {
 	fileServer := http.FileServer(http.FS(sub))
 
 	token := ""
-	if auth.InjectToken {
+	if auth.InjectToken && !auth.PublicSite {
 		token = auth.Token
 	}
 	replacements := brand.WithDefaults().HTMLReplacements(token)
@@ -35,6 +37,10 @@ func Handler(auth PanelAuth, brand config.BrandConfig) http.Handler {
 			return
 
 		case path == "/desktop", path == "/desktop/":
+			if auth.PublicSite {
+				http.Redirect(w, r, "/indir", http.StatusFound)
+				return
+			}
 			serveStaticHTML(w, "static/desktop.html", replacementsWithoutToken(replacements))
 			return
 
@@ -50,12 +56,16 @@ func Handler(auth PanelAuth, brand config.BrandConfig) http.Handler {
 			serveStaticHTML(w, "static/indir.html", replacementsWithoutToken(replacements))
 			return
 
-		case path == "/app", path == "/app/", path == "/app/index.html":
+		case path == "/app", path == "/app/", path == "/app/index.html", path == "/dashboard":
+			if auth.PublicSite {
+				serveStaticHTML(w, "static/app-gate.html", replacementsWithoutToken(replacements))
+				return
+			}
+			if path == "/dashboard" {
+				http.Redirect(w, r, "/app", http.StatusFound)
+				return
+			}
 			serveStaticHTML(w, "static/index.html", replacements)
-			return
-
-		case path == "/dashboard":
-			http.Redirect(w, r, "/app", http.StatusFound)
 			return
 		}
 

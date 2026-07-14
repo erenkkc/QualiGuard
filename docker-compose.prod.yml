@@ -1,11 +1,11 @@
-# Production deploy — QualiGuard + Caddy (HTTPS)
+# Production deploy — QualiGuard website + Caddy (HTTPS)
+#
+# Website = marketing + hesap + indirme
+# Panel / analiz = yalnızca masaüstü uygulaması (QG_PUBLIC_SITE=1)
 #
 # 1. cp .env.example .env
 # 2. QG_DOMAIN ve QG_EMAIL düzenle
 # 3. docker compose -f docker-compose.prod.yml up -d --build
-#
-# Panel: https://your-domain/app
-# Landing: https://your-domain/
 
 services:
   qualiguard:
@@ -19,6 +19,7 @@ services:
     environment:
       QG_DATA_DIR: /data
       QG_PANEL_PASSWORD: ${QG_PANEL_PASSWORD:-}
+      QG_PUBLIC_SITE: "1"
     command:
       - qg-server
       - --host

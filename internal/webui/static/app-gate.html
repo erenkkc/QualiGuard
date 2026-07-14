@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uygulamayı indir — __QG_BRAND_NAME__</title>
+  __QG_THEME_CSS__
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/landing.css?v=4">
+  <style>
+    body { font-family: "Instrument Sans", system-ui, sans-serif; margin: 0; }
+    .gate {
+      min-height: 100vh; display: grid; place-items: center; padding: 32px 20px;
+      background:
+        radial-gradient(ellipse 50% 40% at 50% 0%, rgba(77,159,255,.14), transparent 60%),
+        #070a0f;
+    }
+    .box {
+      max-width: 480px; width: 100%; text-align: center;
+      padding: 40px 32px; border-radius: 22px;
+      background: #0f141c; border: 1px solid var(--border);
+      box-shadow: 0 28px 70px rgba(0,0,0,.4);
+    }
+    .mark {
+      width: 56px; height: 56px; margin: 0 auto 18px; border-radius: 14px;
+      display: grid; place-items: center; color: var(--accent);
+      background: rgba(77,159,255,.12); border: 1px solid rgba(77,159,255,.28);
+    }
+    .mark svg { width: 30px; height: 30px; }
+    h1 {
+      margin: 0 0 10px; font-family: Newsreader, Georgia, serif;
+      font-size: 1.85rem; font-weight: 600;
+    }
+    p { margin: 0 0 12px; color: var(--muted); line-height: 1.55; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 22px; }
+  </style>
+</head>
+<body>
+  <div class="gate">
+    <div class="box">
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5.25 3.4 10.15 8 11 4.6-.85 8-5.75 8-11V5l-8-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h1>Panel uygulamada</h1>
+      <p>Bu site hesap ve indirme içindir. Kod tarama, proje ve AI işlemleri yalnızca bilgisayarındaki <strong>QualiGuard</strong> uygulamasında yapılır.</p>
+      <p>Kurulumu indir, uygulmayı aç — splash, giriş ve panel tek pencerede.</p>
+      <div class="actions">
+        <a class="btn primary" href="/indir">Uygulamayı indir</a>
+        <a class="btn" href="/">Ana sayfa</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
