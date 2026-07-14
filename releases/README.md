@@ -4,8 +4,10 @@ Built by `scripts/package-releases.bat` (or make package-releases).
 
 Expected files:
 
-- `qualiguard-panel-windows.zip`
-- `qualiguard-panel-macos.zip`
+- `QualiGuard-Kurulum.exe` — Windows tek tık kurulum (önerilen)
+- `qualiguard-mac-kurulum.zip` — Mac tek tık kurulum (önerilen)
+- `qualiguard-panel-windows.zip` — Windows zip (yedek)
+- `qualiguard-panel-macos.zip` — Mac zip (yedek)
 - `qg-windows-amd64.exe`
 - `qg-darwin-amd64`
 

@@ -32,7 +32,11 @@
     .os-card {
       padding: 26px 22px; border-radius: 18px; border: 1px solid var(--border);
       background: var(--panel); display: flex; flex-direction: column; gap: 12px;
-      min-height: 200px;
+      min-height: 220px; transition: border-color .2s, box-shadow .2s;
+    }
+    .os-card.recommended {
+      border-color: rgba(52,199,89,.45);
+      box-shadow: 0 0 0 1px rgba(52,199,89,.15);
     }
     .os-card .badge {
       align-self: flex-start; font-size: .72rem; font-weight: 700; letter-spacing: .06em;
@@ -40,8 +44,14 @@
       padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(77,159,255,.3);
       background: rgba(77,159,255,.08);
     }
+    .os-card.recommended .badge {
+      color: #34c759; border-color: rgba(52,199,89,.35); background: rgba(52,199,89,.1);
+    }
     .os-card h3 { margin: 0; font-size: 1.25rem; }
     .os-card p { margin: 0; color: var(--muted); flex: 1; font-size: .92rem; }
+    .os-steps {
+      margin: 0; padding: 0 0 0 18px; color: var(--muted); font-size: .88rem; line-height: 1.55;
+    }
     .os-actions { display: flex; flex-wrap: wrap; gap: 8px; }
     .cli-block h2 { margin: 0 0 12px; font-size: 1.1rem; }
     .dl-grid { display: grid; gap: 12px; }
@@ -53,6 +63,19 @@
     .dl-card p { margin: 0; color: var(--muted); font-size: .85rem; }
     .dl-card.off { opacity: .5; }
     .nav-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .install-modal {
+      display: none; position: fixed; inset: 0; z-index: 100; align-items: center; justify-content: center;
+      padding: 20px; background: rgba(0,0,0,.55);
+    }
+    .install-modal.on { display: flex; }
+    .install-box {
+      max-width: 440px; width: 100%; padding: 28px 26px; border-radius: 18px;
+      background: var(--panel); border: 1px solid var(--border);
+    }
+    .install-box h2 { margin: 0 0 10px; font-size: 1.2rem; }
+    .install-box p { margin: 0 0 14px; color: var(--muted); font-size: .92rem; line-height: 1.5; }
+    .install-box ol { margin: 0 0 18px; padding-left: 20px; color: var(--muted); font-size: .9rem; line-height: 1.6; }
+    .install-box .btn { width: 100%; justify-content: center; }
     @media (max-width: 720px) { .os-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -73,11 +96,11 @@
     <div class="dl-wrap">
       <div class="welcome" id="welcome">
         <h2>Hesabın hazır</h2>
-        <p>Şimdi işletim sistemini seç — paneli indirip bilgisayarında çalıştır.</p>
+        <p>İşletim sistemini seç — tek tıkla kur, panel otomatik açılsın.</p>
       </div>
       <div class="dl-head">
         <h1>İndirme merkezin</h1>
-        <p>Önerilen: Panel paketi. Çift tıkla / start.sh ile lokal panel açılır.</p>
+        <p>Önerilen: Tek tık kurulum. İndirdikten sonra dosyaya çift tıklaman yeterli.</p>
         <div class="dl-user" id="user-line">Oturum kontrol ediliyor…</div>
       </div>
       <div class="nav-row">
@@ -86,20 +109,28 @@
       </div>
 
       <div class="os-grid">
-        <article class="os-card">
-          <span class="badge">Windows</span>
-          <h3>Panel paketi</h3>
-          <p>Zip’i aç → <strong>BASLA.bat</strong>. Tarayıcıda lokal panel açılır.</p>
+        <article class="os-card" id="card-win">
+          <span class="badge" id="badge-win">Windows</span>
+          <h3>Tek tık kurulum</h3>
+          <ol class="os-steps">
+            <li><strong>QualiGuard-Kurulum.exe</strong> indir</li>
+            <li>Dosyaya çift tıkla</li>
+            <li>Kurulum biter, panel tarayıcıda açılır</li>
+          </ol>
           <div class="os-actions">
-            <button type="button" class="btn primary" data-id="windows-panel" id="btn-win">Windows indir</button>
+            <button type="button" class="btn primary" data-id="windows-panel" id="btn-win">Kurulumu indir</button>
           </div>
         </article>
-        <article class="os-card">
-          <span class="badge">Mac</span>
-          <h3>Panel paketi</h3>
-          <p>Zip’i aç → Terminal’de <strong>./start.sh</strong>. Lokal panel başlar.</p>
+        <article class="os-card" id="card-mac">
+          <span class="badge" id="badge-mac">Mac</span>
+          <h3>Tek tık kurulum</h3>
+          <ol class="os-steps">
+            <li>Zip dosyasını indir ve aç</li>
+            <li><strong>QualiGuard-Kur.command</strong> dosyasına çift tıkla</li>
+            <li>Kurulum biter, panel tarayıcıda açılır</li>
+          </ol>
           <div class="os-actions">
-            <button type="button" class="btn primary" data-id="mac-panel" id="btn-mac">Mac indir</button>
+            <button type="button" class="btn primary" data-id="mac-panel" id="btn-mac">Kurulumu indir</button>
           </div>
         </article>
       </div>
@@ -110,9 +141,53 @@
       </div>
     </div>
   </div>
+
+  <div class="install-modal" id="install-modal" role="dialog" aria-modal="true">
+    <div class="install-box">
+      <h2 id="modal-title">İndirme tamam</h2>
+      <p id="modal-lead">Dosya bilgisayarına indi. Şimdi kuruluma geç:</p>
+      <ol id="modal-steps"></ol>
+      <button type="button" class="btn primary" id="modal-close">Anladım</button>
+    </div>
+  </div>
+
   <script>
     function token() { return localStorage.getItem("qg_token") || ""; }
     function isValid(t) { return t && (t.startsWith("qg_") || t.startsWith("ugs_")); }
+
+    function detectOS() {
+      const ua = navigator.userAgent || "";
+      if (/Win/i.test(ua)) return "windows";
+      if (/Mac/i.test(ua)) return "mac";
+      return "other";
+    }
+
+    function showInstallModal(platform) {
+      const modal = document.getElementById("install-modal");
+      const steps = document.getElementById("modal-steps");
+      if (platform === "windows") {
+        document.getElementById("modal-title").textContent = "Şimdi kurulumu aç";
+        document.getElementById("modal-lead").textContent =
+          "Dosya indi. Zip açmana gerek yok — tarayıcının altındaki indirme çubuğundan kurulumu başlat:";
+        steps.innerHTML = `
+          <li>Sayfanın <strong>altında</strong> görünen <strong>QualiGuard-Kurulum.exe</strong> satırına tıkla (veya ▾ → Aç)</li>
+          <li>Windows “Windows bilgisayarınızı korudu” derse → <strong>Diğer bilgiler</strong> → <strong>Yine de çalıştır</strong></li>
+          <li>Kurulum penceresi paneli kurar ve tarayıcıyı açar</li>
+          <li>Sonraki sefer masaüstündeki <strong>QualiGuard</strong> kısayolunu kullan</li>
+        `;
+      } else {
+        document.getElementById("modal-title").textContent = "Şimdi kurulumu aç";
+        document.getElementById("modal-lead").textContent =
+          "Dosya indi. İndirme çubuğundan zip’i aç, sonra kurulum dosyasına çift tıkla:";
+        steps.innerHTML = `
+          <li>İndirilen <strong>qualiguard-mac-kurulum.zip</strong> dosyasını aç</li>
+          <li><strong>QualiGuard-Kur.command</strong> dosyasına çift tıkla</li>
+          <li>İlk seferde “aç” izni istenirse onayla</li>
+          <li>Kurulum biter — panel tarayıcıda açılır</li>
+        `;
+      }
+      modal.classList.add("on");
+    }
 
     async function api(path) {
       const res = await fetch(path, { headers: { Authorization: "Bearer " + token() } });
@@ -123,7 +198,7 @@
       return res;
     }
 
-    async function downloadId(id) {
+    async function downloadId(id, platform) {
       const res = await api("/api/v1/downloads/" + id);
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
@@ -133,11 +208,17 @@
       const blob = await res.blob();
       const dispo = res.headers.get("Content-Disposition") || "";
       const match = /filename=\"?([^\";]+)\"?/.exec(dispo);
+      const filename = match ? match[1] : id;
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = match ? match[1] : id;
+      a.download = filename;
+      document.body.appendChild(a);
       a.click();
+      a.remove();
       URL.revokeObjectURL(a.href);
+      // Tarayıcı güvenlik nedeniyle indirmeyi otomatik çalıştıramaz;
+      // modal kullanıcıyı indirme çubuğundan açmaya yönlendirir.
+      if (platform) showInstallModal(platform);
     }
 
     async function boot() {
@@ -148,6 +229,16 @@
       if (new URLSearchParams(location.search).get("welcome") === "1") {
         document.getElementById("welcome").classList.add("on");
       }
+
+      const os = detectOS();
+      if (os === "windows") {
+        document.getElementById("card-win").classList.add("recommended");
+        document.getElementById("badge-win").textContent = "Windows · Önerilen";
+      } else if (os === "mac") {
+        document.getElementById("card-mac").classList.add("recommended");
+        document.getElementById("badge-mac").textContent = "Mac · Önerilen";
+      }
+
       try {
         const me = await api("/api/auth/me").then(r => r.json());
         document.getElementById("user-line").textContent = "Giriş: " + (me.user?.email || "hesap");
@@ -156,6 +247,7 @@
       const data = await api("/api/v1/downloads").then(r => r.json());
       const byId = Object.fromEntries((data.items || []).map(i => [i.id, i]));
 
+      const platformMap = { "windows-panel": "windows", "mac-panel": "mac" };
       ["windows-panel", "mac-panel"].forEach(id => {
         const btn = document.querySelector(`[data-id="${id}"]`);
         const it = byId[id];
@@ -164,7 +256,7 @@
           btn.disabled = true;
           btn.classList.remove("primary");
         } else {
-          btn.addEventListener("click", () => downloadId(id));
+          btn.addEventListener("click", () => downloadId(id, platformMap[id]));
         }
       });
 
@@ -181,9 +273,16 @@
         </article>`).join("");
 
       document.querySelectorAll("[data-cli]").forEach(btn => {
-        btn.addEventListener("click", () => downloadId(btn.dataset.cli));
+        btn.addEventListener("click", () => downloadId(btn.dataset.cli, null));
       });
     }
+
+    document.getElementById("modal-close").addEventListener("click", () => {
+      document.getElementById("install-modal").classList.remove("on");
+    });
+    document.getElementById("install-modal").addEventListener("click", (e) => {
+      if (e.target.id === "install-modal") e.target.classList.remove("on");
+    });
 
     document.getElementById("btn-logout").addEventListener("click", async () => {
       try {
